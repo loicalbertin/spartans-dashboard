@@ -1,13 +1,12 @@
-import { makeObservable, observable, makeAutoObservable } from 'mobx';
-import { NetworkState } from './NetworkState';
-import { BigNumberState } from '../standard/BigNumberState';
-import { CallParams } from '../../../type';
 import erc20Abi from '@/constants/abi/erc20.json';
-import { EthNetworkConfig } from '../../config/NetworkConfig';
 import BigNumber from 'bignumber.js';
-import { WriteFunction, ReadFunction } from './ContractState';
-import { rootStore } from '../index';
 import { ethers } from 'ethers';
+import { makeAutoObservable } from 'mobx';
+import { CallParams } from '../../../type';
+import { EthNetworkConfig } from '../../config/NetworkConfig';
+import { BigNumberState } from '../standard/BigNumberState';
+import { ReadFunction, WriteFunction } from './ContractState';
+import { NetworkState } from './NetworkState';
 
 class TokenState {
   abi = erc20Abi;
@@ -17,6 +16,7 @@ class TokenState {
   logoURI: string = '';
   chainId: number = 0;
   decimals: number = 18;
+  fixed: number = 6;
 
   network: NetworkState = EthNetworkConfig;
   allowanceForRouter = new ReadFunction<[string, string], BigNumberState>({ name: 'allowance', contract: this, value: new BigNumberState({}) });
@@ -28,7 +28,7 @@ class TokenState {
   y;
   constructor(args: Partial<TokenState>) {
     Object.assign(this, args);
-    this._balance = new BigNumberState({ decimals: this.decimals, loading: true });
+    this._balance = new BigNumberState({ decimals: this.decimals, loading: true, fixed: this.fixed });
     if (this.isEther) {
       this.allowanceForRouter.value.setValue(new BigNumber(ethers.constants.MaxUint256.toString()));
     }
@@ -42,9 +42,9 @@ class TokenState {
   }
 
   get balance() {
-    if (this.isEther) {
-      return rootStore.god.Coin.balance;
-    }
+    // if (this.isEther) {
+    //   return rootStore.god.Coin.balance;
+    // }
     return this._balance;
   }
 
@@ -66,7 +66,7 @@ class TokenState {
   });
 
   preMulticall(args: Partial<CallParams>) {
-    if (this.isEther || !this.address) return;
+    //if (this.isEther || !this.address) return;
     return Object.assign({ address: this.address, abi: this.abi }, args);
   }
 }

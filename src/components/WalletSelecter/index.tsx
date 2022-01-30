@@ -95,6 +95,9 @@ export const WalletSelecter = observer(() => {
   useEffect(() => {
     //@ts-ignore
     const { ethereum } = window;
+
+    store.setChain(BSCMainnetConfig.chainId);
+
     if (ethereum && ethereum.on && !active && !error) {
       const handleChainChanged = () => {
         store.connectInejct();
@@ -144,6 +147,7 @@ export const WalletSelecter = observer(() => {
   const names = config.map((item) => item.title).join(', ');
   const bW = useColorModeValue('3px', '1px');
 
+
   return (
     <Modal isOpen={store.visible} onClose={store.close} isCentered>
       <ModalOverlay />
@@ -155,7 +159,7 @@ export const WalletSelecter = observer(() => {
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody py="6" bg={useColorModeValue('white', 'gray.800')} borderBottomRadius="15px" margin={`0 ${bW}  ${bW}   ${bW} `}>
-          <Tabs variant="soft-rounded" align="center">
+          {/* <Tabs variant="soft-rounded" align="center">
             <TabList>
               <Tab>Mainnet</Tab>
               <Tab>Testnet</Tab>
@@ -190,11 +194,11 @@ export const WalletSelecter = observer(() => {
                 </HStack>
               </TabPanel>
             </TabPanels>
-          </Tabs>
+          </Tabs> */}
           {!god.currentNetwork.account && (
             <Box>
-              <Divider />
-              <Box onClick={store.connectInejct} my="12px" style={{ cursor: 'pointer' }} borderRadius="8px" padding="14px" mt="24px" bg="rgba(0,0,0,0.1)">
+              {/* <Divider /> */}
+              <Box onClick={store.connectInejct} my="12px" style={{ cursor: 'pointer' }} borderRadius="8px" padding="14px" mt="1px" bg="rgba(0,0,0,0.1)">
                 <Flex>
                   <Flex direction="column">
                     <Text fontSize="20" lineHeight="26.38px" fontStyle="normal" fontWeight="500">

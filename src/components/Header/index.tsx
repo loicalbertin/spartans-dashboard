@@ -66,8 +66,8 @@ export const Header = observer(() => {
             <Link href="/">
               <Stack as={'a'} direction={'row'} alignItems={'center'} spacing={{ base: 2, sm: 4 }}>
                 <Icon as={Logo} w={{ base: 8 }} h={{ base: 8 }} />
-                <Heading as={'h1'} fontSize={'xl'} display={{ base: 'none', md: 'block' }}>
-                  Dapp {lang.t('sample')} V2
+                <Heading as={'h1'} fontSize={'xx-large'} display={{ base: 'none', md: 'block' }}>
+                 Spartans Dashboard
                 </Heading>
               </Stack>
             </Link>

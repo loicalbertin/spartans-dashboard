@@ -50,10 +50,10 @@ export const DesktopNav = observer((props: BoxProps) => {
   });
   return (
     <Stack direction={'row'} spacing={2} {...props}>
-      <Button onClick={store.showConnecter} pl={1} borderRadius="40">
+      {/* <Button onClick={store.showConnecter} pl={1} borderRadius="40">
         <Img w={8} src={god.currentChain.logoUrl} />
         <Box ml={2}>{god.currentChain.name}</Box>
-      </Button>
+      </Button> */}
       {accountView}
     </Stack>
   );

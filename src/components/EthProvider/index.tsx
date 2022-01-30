@@ -10,6 +10,7 @@ import { Provider as MulticallProvider } from 'ethcall';
 import { injected } from '@/lib/web3-react';
 import { eventBus } from '../../lib/event';
 import { _ } from '@/lib/lodash';
+import { BSCMainnetConfig } from 'config/BSCMainnetConfig';
 
 export const ETHProvider = observer(({ children }) => {
   const { god, lang } = useStore();
@@ -35,7 +36,7 @@ export const ETHProvider = observer(({ children }) => {
         god.setChain(chainId);
       }
     } else {
-      // god.currentNetwork.chain.setCurrentId(BSCMainnetConfig.chainId);
+      god.currentNetwork.chain.setCurrentId(BSCMainnetConfig.chainId);
       // store.wrongNetwork();
     }
 
