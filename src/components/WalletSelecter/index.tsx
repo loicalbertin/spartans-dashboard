@@ -1,0 +1,236 @@
+import React from 'react';
+import { observer, useLocalStore } from 'mobx-react-lite';
+import { useStore } from '../../store/index';
+import { useWeb3React } from '@web3-react/core';
+import { injected, walletconnect } from '../../lib/web3-react';
+import { Modal, ModalContent, ModalOverlay } from '@chakra-ui/modal';
+import { Box, Flex, Text, HStack, VStack } from '@chakra-ui/layout';
+import {
+  Image,
+  Button,
+  Img,
+  Avatar,
+  AvatarBadge,
+  createStandaloneToast,
+  Center,
+  Divider,
+  AvatarGroup,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  useColorMode,
+  useColorModeValue,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel
+} from '@chakra-ui/react';
+import { metamaskUtils } from '../../lib/metaskUtils';
+import { useEffect } from 'react';
+import { Network } from '@/store/god';
+import { IotexMainnetConfig } from '../../config/IotexMainnetConfig';
+import { PolygonMainnetConfig } from '../../config/PolygonMainnetConfig';
+import { BSCMainnetConfig } from '../../config/BSCMainnetConfig';
+import { ETHMainnetConfig } from '../../config/ETHMainnetConfig';
+
+import { BSCTestnetConfig } from '../../config/BSCTestnetConfig';
+import { ETHKovanConfig } from '../../config/ETHKovanConfig';
+import { IotexTestnetConfig } from '../../config/IotexTestnetConfig';
+
+const toast = createStandaloneToast();
+
+export const WalletSelecter = observer(() => {
+  const { god, lang } = useStore();
+  const { active, error, activate } = useWeb3React();
+
+  const store = useLocalStore(() => ({
+    get visible() {
+      return god.eth.connector.showConnector;
+    },
+    get networks() {
+      return [ETHMainnetConfig, BSCMainnetConfig, IotexMainnetConfig, PolygonMainnetConfig];
+    },
+    get testnet() {
+      return [ETHKovanConfig, BSCTestnetConfig, IotexTestnetConfig];
+    },
+    close() {
+      god.eth.connector.showConnector = false;
+    },
+    async setChain(val) {
+      const chain = god.currentNetwork.chain.map[val];
+      console.log(chain);
+      try {
+        await metamaskUtils.setupNetwork({
+          chainId: chain.chainId,
+          blockExplorerUrls: [chain.explorerURL],
+          chainName: chain.name,
+          nativeCurrency: {
+            decimals: chain.Coin.decimals || 18,
+            name: chain.Coin.symbol,
+            symbol: chain.Coin.symbol
+          },
+          rpcUrls: [chain.rpcUrl]
+        });
+        god.setChain(val);
+      } catch (error) {
+        toast({
+          description: error.message,
+          status: 'warning'
+        });
+      }
+    },
+    connectInejct() {
+      god.setNetwork(Network.ETH);
+      activate(injected);
+      god.eth.connector.latestProvider.save('inject');
+    },
+    onWalletConnect() {
+      god.setNetwork(Network.ETH);
+      activate(walletconnect);
+      god.eth.connector.latestProvider.save('walletConnect');
+    }
+  }));
+
+  useEffect(() => {
+    //@ts-ignore
+    const { ethereum } = window;
+    if (ethereum && ethereum.on && !active && !error) {
+      const handleChainChanged = () => {
+        store.connectInejct();
+      };
+      const handleAccountsChanged = (accounts: string[]) => {
+        if (accounts.length > 0) {
+          store.connectInejct();
+        }
+      };
+      ethereum.on('networkChanged', handleChainChanged);
+      ethereum.on('close', handleChainChanged);
+      ethereum.on('chainChanged', handleChainChanged);
+      ethereum.on('accountsChanged', handleAccountsChanged);
+      return () => {
+        if (ethereum.removeListener) {
+          ethereum.removeListener('networkChanged', handleChainChanged);
+          ethereum.removeListener('close', handleChainChanged);
+          ethereum.removeListener('chainChanged', handleChainChanged);
+          ethereum.removeListener('accountsChanged', handleAccountsChanged);
+        }
+      };
+    }
+  }, [active, error, activate]);
+
+  const config = [
+    {
+      title: 'Metamask',
+      icon: '/images/metamask.svg'
+    },
+    {
+      title: 'ioPay',
+      icon: '/images/iopay.svg'
+    },
+    {
+      title: 'Trust',
+      icon: '/images/trustwallet.svg'
+    },
+    {
+      title: 'Math',
+      icon: '/images/mathwallet.svg'
+    },
+    {
+      title: 'imToken',
+      icon: '/images/imtoken.svg'
+    }
+  ];
+  const names = config.map((item) => item.title).join(', ');
+  const bW = useColorModeValue('3px', '1px');
+
+  return (
+    <Modal isOpen={store.visible} onClose={store.close} isCentered>
+      <ModalOverlay />
+      <ModalContent borderRadius="15px" bgGradient={god.currentChain.info.theme.bgGradient}>
+        <ModalHeader bg={useColorModeValue('white', 'gray.800')} borderTopRadius="15px" margin={`${bW}  ${bW}  0 ${bW} `}>
+          <Text fontSize="xl" fontWeight="bold">
+            {lang.t(god.isConnect ? 'switch.network' : 'connect.to.wallet')}
+          </Text>
+        </ModalHeader>
+        <ModalCloseButton />
+        <ModalBody py="6" bg={useColorModeValue('white', 'gray.800')} borderBottomRadius="15px" margin={`0 ${bW}  ${bW}   ${bW} `}>
+          <Tabs variant="soft-rounded" align="center">
+            <TabList>
+              <Tab>Mainnet</Tab>
+              <Tab>Testnet</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                <HStack justify="space-between" mb={6} px={4}>
+                  {store.networks.map((i) => (
+                    <Box display="flex" flexDirection="column" alignItems="center" key={i.chainId}>
+                      <Avatar src={i.logoUrl} cursor="pointer" bg="transparent" size="md" onClick={() => store.setChain(i.chainId)}>
+                        {god.currentChain.chainId == i.chainId && <AvatarBadge boxSize="1em" bg="green.500" />}
+                      </Avatar>
+                      <Text fontSize="xs" mt={1}>
+                        {i.name}
+                      </Text>
+                    </Box>
+                  ))}
+                </HStack>
+              </TabPanel>
+              <TabPanel>
+                <HStack justify="space-between" mb={6} px={4}>
+                  {store.testnet.map((i) => (
+                    <Box display="flex" flexDirection="column" alignItems="center" key={i.chainId}>
+                      <Avatar src={i.logoUrl} cursor="pointer" bg="transparent" size="md" onClick={() => store.setChain(i.chainId)}>
+                        {god.currentChain.chainId == i.chainId && <AvatarBadge boxSize="1em" bg="green.500" />}
+                      </Avatar>
+                      <Text fontSize="xs" mt={1}>
+                        {i.name}
+                      </Text>
+                    </Box>
+                  ))}
+                </HStack>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+          {!god.currentNetwork.account && (
+            <Box>
+              <Divider />
+              <Box onClick={store.connectInejct} my="12px" style={{ cursor: 'pointer' }} borderRadius="8px" padding="14px" mt="24px" bg="rgba(0,0,0,0.1)">
+                <Flex>
+                  <Flex direction="column">
+                    <Text fontSize="20" lineHeight="26.38px" fontStyle="normal" fontWeight="500">
+                      {lang.t('browser.wallet')}
+                    </Text>
+                    <Text mt="3px" color="gray.500" variant="blue" fontSize="12" lineHeight="16.38px" fontStyle="normal" fontWeight="500">
+                      ({names})
+                    </Text>
+                  </Flex>
+                  <Flex ml="2px">
+                    <AvatarGroup size="sm" border="none">
+                      {config.map((item, index) => {
+                        return <Avatar name={item.title} key={item.title} src={item.icon} />;
+                      })}
+                    </AvatarGroup>
+                  </Flex>
+                </Flex>
+              </Box>
+              <Box onClick={() => store.onWalletConnect()} my="12px" style={{ cursor: 'pointer' }} borderRadius="8px" padding="14px" background="rgba(0,0,0,0.1)">
+                <Flex justifyContent="space-between" alignItems="center">
+                  <Flex direction="column">
+                    <Text fontSize="18" lineHeight="26.38px" fontStyle="normal" fontWeight="500">
+                      {lang.t('wallet.connect')}
+                    </Text>
+                  </Flex>
+                  <Flex ml="2px">
+                    <AvatarGroup size="sm" border="none">
+                      <Avatar src={'/images/walletConnect.svg'} />
+                    </AvatarGroup>
+                  </Flex>
+                </Flex>
+              </Box>
+            </Box>
+          )}
+        </ModalBody>
+      </ModalContent>
+    </Modal>
+  );
+});
