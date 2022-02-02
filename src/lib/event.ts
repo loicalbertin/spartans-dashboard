@@ -9,12 +9,12 @@ class MyEmitter extends EventEmitter {
   }
 }
 
-interface MessageEvents {
-  '*': ({ type: string, args: [] }) => void;
-  'wallet.onAccount': () => void;
-  'wallet.logout': () => void;
-  'chain.switch': () => void;
-  'global.cacheData': () => void;
+type MessageEvents = {
+  "*": ({ type: string, args: [] }) => void;
+  "wallet.onAccount": () => void;
+  "wallet.logout": () => void;
+  "chain.switch": () => void;
+  "global.cacheData": () => void;
 }
 
 export const eventBus = new MyEmitter() as TypedEmitter<MessageEvents>;
