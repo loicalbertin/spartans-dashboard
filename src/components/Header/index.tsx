@@ -77,7 +77,7 @@ export const Header = observer(() => {
             <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
               <DesktopNav />
             </Flex>
-            <Popover variant="hover" closeOnBlur>
+            {/* <Popover variant="hover" closeOnBlur>
               {({ onClose }) => (
                 <>
                   <PopoverTrigger>
@@ -105,7 +105,7 @@ export const Header = observer(() => {
                   </PopoverContent>
                 </>
               )}
-            </Popover>
+            </Popover> */}
             <IconButton borderRadius="12" aria-label={'Toggle Color Mode'} onClick={toggleColorMode} icon={colorMode == 'light' ? <IoMoon size={18} /> : <IoSunny size={18} />} />
           </Stack>
         </Container>
