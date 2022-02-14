@@ -40,7 +40,6 @@ import { helper } from '@/lib/helper';
 import { NoEthereumProviderError } from '@web3-react/injected-connector';
 
 export const Header = observer(() => {
-  const { isOpen: isMobileNavOpen, onToggle } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const { error } = useWeb3React();
   const { lang } = useStore();
@@ -58,15 +57,12 @@ export const Header = observer(() => {
         }}
       >
         <Container as={Flex} maxW={'7xl'} align={'center'}>
-          <Flex flex={{ base: 1, md: 'auto' }} ml={{ base: -2 }} display={{ base: 'flex', md: 'none' }}>
-            <IconButton onClick={onToggle} icon={isMobileNavOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />} variant={'ghost'} size={'sm'} aria-label={'Toggle Navigation'} />
-          </Flex>
 
           <Flex flex={{ base: 1, md: 'auto' }} justify={{ base: 'center', md: 'start' }}>
             <Link href="/">
               <Stack as={'a'} direction={'row'} alignItems={'center'} spacing={{ base: 2, sm: 4 }}>
                 <Icon as={Logo} w={{ base: 8 }} h={{ base: 8 }} />
-                <Heading as={'h1'} fontSize={'xx-large'} display={{ base: 'none', md: 'block' }}>
+                <Heading as={'h1'} fontSize={{base: 'large', md: 'x-large', lg: 'xx-large' }} display={{ base: 'none', sm: 'block' }}>
                  Spartans Dashboard
                 </Heading>
               </Stack>
@@ -74,7 +70,7 @@ export const Header = observer(() => {
           </Flex>
 
           <Stack direction={'row'} align={'center'} spacing={2} flex={{ base: 1, md: 'auto' }} justify={'flex-end'}>
-            <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
+            <Flex display={{ base: 'flex', md: 'flex' }} ml={10}>
               <DesktopNav />
             </Flex>
             {/* <Popover variant="hover" closeOnBlur>
