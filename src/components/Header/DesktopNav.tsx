@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, BoxProps, Text, Button, Box, Img, Tag, ButtonGroup, chakra, useColorModeValue } from '@chakra-ui/react';
+import { Stack, BoxProps, Text, Button, Box, Img, Tag, ButtonGroup, chakra, useColorModeValue, Flex } from '@chakra-ui/react';
 import { observer, useObserver, useLocalStore } from 'mobx-react-lite';
 import { useStore } from '@/store/index';
 import { helper } from '@/lib/helper';
@@ -21,17 +21,19 @@ export const DesktopNav = observer((props: BoxProps) => {
   const accountView = useObserver(() => {
     if (!god.currentNetwork.account) {
       return (
-        <Button colorScheme="pink" onClick={store.showConnecter}>
+        <Button colorScheme="pink" onClick={store.showConnecter} fontSize={{ base: "xs", md: "md" }}>
           {lang.t('connect.wallet')}
         </Button>
       );
     }
     return (
       <Button pr="0" pl="4" bg={useColorModeValue('gray.100', 'dark.100')}>
-        <Text mr="2" fontSize="sm">
-          <chakra.span mr={1}>{god.currentChain.Coin.balance.format}</chakra.span>
-          <chakra.span>{god.currentChain.Coin.symbol}</chakra.span>
-        </Text>
+        <Flex display={{ base: 'none', md: 'block' }}>
+          <Text mr="0" fontSize="sm">
+            <chakra.span mr={1}>{god.currentChain.Coin.balance.format}</chakra.span>
+            <chakra.span>{god.currentChain.Coin.symbol}</chakra.span>
+          </Text>
+        </Flex>
         <Button
           px={4}
           onClick={store.showWalletInfo}
@@ -42,7 +44,9 @@ export const DesktopNav = observer((props: BoxProps) => {
             _active: { bgGradient: god.currentChain.info.theme?.bgGradient }
           }}
         >
-          <Text mr={2}>{helper.string.truncate(god.currentNetwork.account, 12, '...')}</Text>
+          <Flex display={{ base: 'none', md: 'block' }}>
+            <Text mr={2}>{helper.string.truncate(god.currentNetwork.account, 12, '...')}</Text>
+          </Flex>
           <Jazzicon diameter={22} address={god.currentNetwork.account} style={{ border: '2px solid #617aff', borderRadius: '50px', padding: '1px' }}></Jazzicon>
         </Button>
       </Button>
