@@ -13,6 +13,9 @@ categories:
   - title: '🔧 Technical Tasks'
     labels:
       - 'Technical Task'
+  - title: '📌 Dependencies upgrades'
+    labels:
+      - 'dependencies'
 change-template: '- $TITLE (#$NUMBER) @$AUTHOR'
 template: |
   ## What's Changed
