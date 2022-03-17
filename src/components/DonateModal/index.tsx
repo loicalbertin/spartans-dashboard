@@ -48,9 +48,9 @@ export const DonateModal = observer((props: PropsType) => {
               <Spacer />
               <Box w='100%' p={4} borderWidth='1px' borderRadius='lg'>
                 <HStack p={4} >
-                  <VStack align={'left'} justifyContent={'left'}>
+                  <VStack maxWidth={{ base: '85%', md: 'full' }} align={'left'} justifyContent={'left'}>
                     <Text >Donation Address:</Text>
-                    <Text>{store.donationAddress.value}</Text>
+                    <Text isTruncated>{store.donationAddress.value}</Text>
                   </VStack>
                   <Spacer />
                   <Button variant={'ghost'} onClick={onCopy} leftIcon={<Icon as={BiCopy} onClick={onCopy} boxSize={6} />} />
