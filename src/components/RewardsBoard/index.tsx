@@ -4,8 +4,9 @@ import TokenState from '@/store/lib/TokenState';
 import { BooleanState, StringState } from '@/store/standard/base';
 import { BigNumberState } from '@/store/standard/BigNumberState';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
-import { Box, Container, Divider, Grid, GridItem, HStack, Icon, Image, Input, Link, SimpleGrid, Stack, StackDivider, Text, VStack } from '@chakra-ui/react';
+import { Box, Container, Divider, Grid, GridItem, HStack, Icon, Image, Input, Link, SimpleGrid, Stack, StackDivider, Text, VStack, Wrap, WrapItem } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
+import { ceil } from 'lodash';
 import { action, reaction } from 'mobx';
 import { observer, useLocalObservable } from 'mobx-react-lite';
 import { useEffect } from 'react';
@@ -22,20 +23,28 @@ export const RewardsBoard = observer(() => {
     totalDividendsDistributed: new BigNumberState({ fixed: 6 }),
     accountTotalDividendsDistributed: new BigNumberState({ fixed: 6 }),
     accountWithdrawableDividends: new BigNumberState({ fixed: 6 }),
+    darkSpartanToken: new TokenState({ address: "0x63aad0448f58ae1b98d75456cfc6f39235e353f6", abi: spartanAbi, fixed: 6 }),
+    darkKnightToken: new TokenState({ address: "0x6cc0e0aedbbd3c35283e38668d959f6eb3034856", abi: spartanAbi, fixed: 6 }),
+    darkTotalDividendsDistributed: new BigNumberState({ fixed: 6 }),
+    darkAccountTotalDividendsDistributed: new BigNumberState({ fixed: 6 }),
+    darkAccountWithdrawableDividends: new BigNumberState({ fixed: 6 }),
     isQualifiedForRewards: new BooleanState(),
     async updateCommonData() {
-      await god.currentNetwork.multicall(
+      await god.bscNetwork.multicall(
         [
-          store.spartanToken.preMulticall({ method: 'decimals', handler: action('setDecimals', (v: any) => (store.spartanToken.decimals = Number(v.toString()))) }),
-          store.knightToken.preMulticall({ method: 'decimals', handler: action('setDecimals', (v: any) => (store.knightToken.decimals = Number(v.toString()))) }),
           store.spartanToken.preMulticall({ method: 'getTotalDividendsDistributed', handler: action('setTotalDividendsDistributed', (v: any) => (store.totalDividendsDistributed.setValue(new BigNumber(v.toString())))) })
+        ].filter((i) => !!i)
+      );
+      await god.ftmNetwork.multicall(
+        [
+          store.darkSpartanToken.preMulticall({ method: 'getTotalDividendsDistributed', handler: action('setTotalDividendsDistributed', (v: any) => (store.darkTotalDividendsDistributed.setValue(new BigNumber(v.toString())))) })
         ].filter((i) => !!i)
       );
     },
     async updateDataForWallet() {
       const val = store.walletAddress.value;
-      if (god.currentNetwork.isAddress(val)) {
-        await god.currentNetwork.multicall(
+      if (god.bscNetwork.isAddress(val)) {
+        await god.bscNetwork.multicall(
           [
             store.spartanToken.preMulticall({
               method: 'getAccountDividendsInfo', params: [val], handler: action('setAccountDividendsInfo', (v: any) => {
@@ -45,6 +54,18 @@ export const RewardsBoard = observer(() => {
             }),
             store.spartanToken.preMulticall({ method: 'balanceOf', params: [val], handler: action('setBalance', (v: any) => (store.spartanToken._balance.setValue(new BigNumber(v.toString())))) }),
             store.knightToken.preMulticall({ method: 'balanceOf', params: [val], handler: action('setBalance', (v: any) => (store.knightToken._balance.setValue(new BigNumber(v.toString())))) })
+          ].filter((i) => !!i)
+        );
+        await god.ftmNetwork.multicall(
+          [
+            store.darkSpartanToken.preMulticall({
+              method: 'getAccountDividendsInfo', params: [val], handler: action('setAccountDividendsInfo', (v: any) => {
+                store.darkAccountTotalDividendsDistributed.setValue(new BigNumber(v.totalDividends.toString()));
+                store.darkAccountWithdrawableDividends.setValue(new BigNumber(v.withdrawableDividends.toString()));
+              })
+            }),
+            store.darkSpartanToken.preMulticall({ method: 'balanceOf', params: [val], handler: action('setBalance', (v: any) => (store.darkSpartanToken._balance.setValue(new BigNumber(v.toString())))) }),
+            store.darkKnightToken.preMulticall({ method: 'balanceOf', params: [val], handler: action('setBalance', (v: any) => (store.darkKnightToken._balance.setValue(new BigNumber(v.toString())))) })
           ].filter((i) => !!i)
         );
       }
@@ -78,6 +99,7 @@ export const RewardsBoard = observer(() => {
       store.updateDataForWallet();
     }, 10 * 60 * 1000);
 
+    store.updateCommonData();
   }, []);
 
 
@@ -108,6 +130,14 @@ export const RewardsBoard = observer(() => {
                 <Text fontSize='x-large' fontWeight='bold' >{store.knightToken.balance.format}</Text>
                 <Image src='images/knight-icon.png' boxSize="32px" />
               </HStack>
+              <HStack spacing='4px' placeContent={'flex-end'}>
+                <Text fontSize='x-large' fontWeight='bold'>{store.darkSpartanToken.balance.format}</Text>
+                <Image src='images/dark-spartans.png' boxSize="32px" />
+              </HStack>
+              <HStack placeContent={'flex-end'}>
+                <Text fontSize='x-large' fontWeight='bold' >{store.darkKnightToken.balance.format}</Text>
+                <Image src='images/dKNIGHT.svg' boxSize="32px" />
+              </HStack>
             </Box>
             <Text align={'center'}
               hidden={store.isQualifiedForRewards.value}>
@@ -130,12 +160,20 @@ export const RewardsBoard = observer(() => {
                 <Text fontSize='x-large' fontWeight='bold'>{store.accountTotalDividendsDistributed.format}</Text>
                 <Image src='images/knight-icon.png' boxSize="32px" />
               </HStack>
+              <HStack placeContent={'flex-end'}>
+                <Text fontSize='x-large' fontWeight='bold'>{store.darkAccountTotalDividendsDistributed.format}</Text>
+                <Image src='images/dKNIGHT.svg' boxSize="32px" />
+              </HStack>
             </GridItem>
             <GridItem w='100%'>
               <Text align='center' fontSize='x-large'>Accumulating Rewards (pending)</Text>
               <HStack placeContent={'flex-end'}>
                 <Text fontSize='x-large' fontWeight='bold'>{store.accountWithdrawableDividends.format}</Text>
                 <Image src='images/knight-icon.png' boxSize="32px" />
+              </HStack>
+              <HStack placeContent={'flex-end'}>
+                <Text fontSize='x-large' fontWeight='bold'>{store.darkAccountWithdrawableDividends.format}</Text>
+                <Image src='images/dKNIGHT.svg' boxSize="32px" />
               </HStack>
             </GridItem>
           </Grid>
@@ -145,10 +183,20 @@ export const RewardsBoard = observer(() => {
         <Divider />
         <Box>
           <Text fontSize='xx-large'>Total Rewards Distributed to Holders</Text>
-          <HStack placeContent={'center'}>
-            <Text align={'center'} fontSize='x-large' fontWeight='bold'>{store.totalDividendsDistributed.format}</Text>
-            <Image src='images/knight-icon.png' boxSize="32px" />
-          </HStack>
+          <Wrap align='center' spacing='20px' justify='center'>
+            <WrapItem>
+              <HStack placeContent={'center'}>
+                <Text align={'center'} fontSize='x-large' fontWeight='bold'>{store.totalDividendsDistributed.format}</Text>
+                <Image src='images/knight-icon.png' boxSize="32px" />
+              </HStack>
+            </WrapItem>
+            <WrapItem>
+              <HStack placeContent={'center'}>
+                <Text align={'center'} fontSize='x-large' fontWeight='bold'>{store.darkTotalDividendsDistributed.format}</Text>
+                <Image src='images/dKNIGHT.svg' boxSize="32px" />
+              </HStack>
+            </WrapItem>
+          </Wrap>
         </Box>
 
         <Divider />
@@ -160,12 +208,12 @@ export const RewardsBoard = observer(() => {
           However it needs to hit a certain threshold to justify gas fees to airdrop rewards. Larger holders will hit that threshold sooner but that doesn't impact lower holders rewards as they still accumulate.
         </Text>
 
-        <Text  align={'justify'}>
+        <Text align={'justify'}>
           All you need to know about Spartan token, reflections and how to compound your investment can be found in the{' '}
           <Link
-                href='https://info-121.gitbook.io/welcome-to-the-spartan-army/'
-                color='teal.500'
-                isExternal>Spartan whitepaper<ExternalLinkIcon mx='2px' /></Link>.
+            href='https://info-121.gitbook.io/welcome-to-the-spartan-army/'
+            color='teal.500'
+            isExternal>Spartan whitepaper<ExternalLinkIcon mx='2px' /></Link>.
         </Text>
       </VStack >
     </Container >

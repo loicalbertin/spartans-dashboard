@@ -1,4 +1,5 @@
 import { BSCMainnetConfig } from './BSCMainnetConfig';
+import { FTMMainnetConfig } from './FTMMainnetConfig';
 import { MappingState } from '@/store/standard/MappingState';
 import { EthNetworkState } from '../store/lib/EthNetworkState';
 import { ETHKovanConfig } from './ETHKovanConfig';
@@ -9,7 +10,7 @@ import { IotexTestnetConfig } from './IotexTestnetConfig';
 import { PolygonMainnetConfig } from './PolygonMainnetConfig';
 import { allowChains } from '../lib/web3-react';
 
-const EthChains = [BSCMainnetConfig, BSCTestnetConfig, ETHMainnetConfig, ETHKovanConfig, IotexTestnetConfig, IotexMainnetConfig, PolygonMainnetConfig];
+const EthChains = [BSCMainnetConfig, BSCTestnetConfig, ETHMainnetConfig, ETHKovanConfig, IotexTestnetConfig, IotexMainnetConfig, PolygonMainnetConfig, FTMMainnetConfig];
 
 export const EthNetworkConfig = new EthNetworkState({
   allowChains,
