@@ -4,12 +4,12 @@ import TokenState from '@/store/lib/TokenState';
 import { BooleanState, StringState } from '@/store/standard/base';
 import { BigNumberState } from '@/store/standard/BigNumberState';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
-import { Box, Container, Divider, Grid, GridItem, HStack, Icon, Image, Input, Link, SimpleGrid, Stack, StackDivider, Text, VStack, Wrap, WrapItem } from '@chakra-ui/react';
+import { Box, Container, Divider, Grid, GridItem, HStack, Icon, Image, Input, Link, SimpleGrid, Text, VStack, Wrap, WrapItem } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
-import { ceil } from 'lodash';
 import { action, reaction } from 'mobx';
 import { observer, useLocalObservable } from 'mobx-react-lite';
 import { useEffect } from 'react';
+import { BiWallet } from "react-icons/bi";
 import { useStore } from '../../store/index';
 
 
@@ -29,6 +29,7 @@ export const RewardsBoard = observer(() => {
     darkAccountTotalDividendsDistributed: new BigNumberState({ fixed: 6 }),
     darkAccountWithdrawableDividends: new BigNumberState({ fixed: 6 }),
     isQualifiedForRewards: new BooleanState(),
+    isQualifiedForDarkRewards: new BooleanState(),
     async updateCommonData() {
       await god.bscNetwork.multicall(
         [
@@ -91,7 +92,13 @@ export const RewardsBoard = observer(() => {
     reaction(
       () => store.spartanToken._balance.value,
       val => {
-        action('setQualifiedForRewards', () => (store.isQualifiedForRewards.setValue(val.gte(new BigNumber(50000 * (10 ** 18))))))();
+        action('setQualifiedForRewards', () => (store.isQualifiedForRewards.setValue(val.gte(new BigNumber(50000 * (10 ** 18))) || val.lte(new BigNumber(0)) )))();
+      });
+
+    reaction(
+      () => store.darkSpartanToken._balance.value,
+      val => {
+        action('setQualifiedForDarkRewards', () => (store.isQualifiedForDarkRewards.setValue(val.gte(new BigNumber(50000 * (10 ** 18)))  || val.lte(new BigNumber(0)) )))();
       });
 
     setInterval(() => {
@@ -122,6 +129,7 @@ export const RewardsBoard = observer(() => {
           <VStack spacing='4px'>
             <Text fontSize='xx-large' >In your wallet</Text>
             <Box w='100%' p={4} borderWidth='1px' borderRadius='lg'>
+              <Icon as={BiWallet} boxSize={8} />
               <HStack spacing='4px' placeContent={'flex-end'}>
                 <Text fontSize='x-large' fontWeight='bold'>{store.spartanToken.balance.format}</Text>
                 <Image src='images/spartans.png' boxSize="32px" />
@@ -144,9 +152,18 @@ export const RewardsBoard = observer(() => {
               You need to hold at least 50,000 Spartan tokens in your wallet to qualify for receiving rewards.
               Buy more tokens on{' '}
               <Link
-                href='https://dex.knightswap.financial/#/add/ETH/0xbcfe392e778dbb59dcad624f10f7fa8c4a910b1e'
+                href='https://dex.knightswap.financial/#/swap'
                 color='teal.500'
                 isExternal>KnightSwap <ExternalLinkIcon mx='2px' /></Link>.
+            </Text>
+            <Text align={'center'}
+              hidden={store.isQualifiedForDarkRewards.value}>
+              You need to hold at least 50,000 Dark Spartan tokens in your wallet to qualify for receiving rewards.
+              Buy more tokens on{' '}
+              <Link
+                href='https://darkdex.knightswap.financial/#/swap'
+                color='teal.500'
+                isExternal>Dark KnightSwap <ExternalLinkIcon mx='2px' /></Link>.
             </Text>
           </VStack>
 
@@ -213,7 +230,10 @@ export const RewardsBoard = observer(() => {
           <Link
             href='https://info-121.gitbook.io/welcome-to-the-spartan-army/'
             color='teal.500'
-            isExternal>Spartan whitepaper<ExternalLinkIcon mx='2px' /></Link>.
+            isExternal>Spartan whitepaper<ExternalLinkIcon mx='2px' /></Link>{' '} for BSC and <Link
+            href='https://info-121.gitbook.io/spartans-army-ftm/'
+            color='teal.500'
+            isExternal>Dark Spartan whitepaper<ExternalLinkIcon mx='2px' /></Link>{' '} for Fantom.
         </Text>
       </VStack >
     </Container >
