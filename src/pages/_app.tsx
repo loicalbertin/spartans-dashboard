@@ -10,6 +10,7 @@ import { theme } from '@/lib/theme';
 import { ETHProvider } from '../components/EthProvider';
 import { getLibrary } from '../lib/web3-react';
 import { WalletSelecter } from '../components/WalletSelecter/index';
+import { Footer } from '@/components/Footer';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const { lang, god } = useStore();
@@ -29,6 +30,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           <Toaster />
           <Header />
           <Component {...pageProps} />
+          <Footer/>
         </Web3ReactProvider>
       </ChakraProvider>
     )
