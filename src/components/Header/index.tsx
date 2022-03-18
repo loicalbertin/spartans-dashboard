@@ -1,43 +1,18 @@
-import React from 'react';
-import {
-  Box,
-  Flex,
-  Container,
-  Stack,
-  useDisclosure,
-  IconButton,
-  useColorModeValue,
-  Icon,
-  useColorMode,
-  Heading,
-  Alert,
-  AlertIcon,
-  Text,
-  AlertDescription,
-  CloseButton,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverHeader,
-  PopoverBody,
-  PopoverFooter,
-  PopoverArrow,
-  PopoverCloseButton,
-  Link as LinkC
-} from '@chakra-ui/react';
-import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
-import { IoMoon, IoSunny } from 'react-icons/io5';
-import Link from 'next/link'
-import { Logo } from '../Logo';
 import { DesktopNav } from '@/components/Header/DesktopNav';
-import { observer } from 'mobx-react-lite';
-import { WalletInfo } from '../WalletInfo';
-import { useWeb3React } from '@web3-react/core';
-import { getErrorMessage } from '../../lib/web3-react';
-import { Button, Avatar, Image } from '@chakra-ui/react';
-import { useStore } from '../../store/index';
 import { helper } from '@/lib/helper';
+import {
+  Alert, AlertDescription, AlertIcon, Box, Button, CloseButton, Container, Flex, Heading, Icon, IconButton, Image, Link as LinkC, Popover, PopoverContent, PopoverTrigger, Stack, Text, useColorMode, useColorModeValue
+} from '@chakra-ui/react';
+import { useWeb3React } from '@web3-react/core';
 import { NoEthereumProviderError } from '@web3-react/injected-connector';
+import { observer } from 'mobx-react-lite';
+import Link from 'next/link';
+import React from 'react';
+import { IoMoon, IoSunny } from 'react-icons/io5';
+import { getErrorMessage } from '../../lib/web3-react';
+import { useStore } from '../../store/index';
+import { Logo } from '../Logo';
+import { WalletInfo } from '../WalletInfo';
 
 export const Header = observer(() => {
   const { colorMode, toggleColorMode } = useColorMode();

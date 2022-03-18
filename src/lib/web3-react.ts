@@ -1,18 +1,12 @@
-import { publicConfig } from './../config/public';
 import { Web3Provider } from '@ethersproject/providers';
-import { InjectedConnector, NoEthereumProviderError, UserRejectedRequestError } from '@web3-react/injected-connector';
-import { WalletConnectConnector, UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } from '@iotexproject/walletconnect-connector';
+import { UserRejectedRequestError as UserRejectedRequestErrorWalletConnect, WalletConnectConnector } from '@iotexproject/walletconnect-connector';
 import { UnsupportedChainIdError } from '@web3-react/core';
+import { InjectedConnector, NoEthereumProviderError, UserRejectedRequestError } from '@web3-react/injected-connector';
 
 const POLLING_INTERVAL = 12000;
 export const RPC_URLS = {
-  1: `https://mainnet.infura.io/v3/${publicConfig.infuraId}`,
-  42: `https://kovan.infura.io/v3/${publicConfig.infuraId}`,
   56: 'https://bsc-dataseed.binance.org',
-  97: 'https://data-seed-prebsc-1-s1.binance.org:8545',
-  4689: 'https://babel-api.mainnet.iotex.io/',
-  4690: `https://babel-api.testnet.iotex.io`,
-  137: 'https://polygon-rpc.com/'
+  250: 'https://rpc.ftm.tools/'
 };
 
 export const allowChains = Object.keys(RPC_URLS).map((i) => Number(i));

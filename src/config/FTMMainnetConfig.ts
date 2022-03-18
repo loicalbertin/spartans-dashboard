@@ -1,4 +1,3 @@
-import { RPC_URLS } from '@/lib/web3-react';
 import { ChainState } from '@/store/lib/ChainState';
 import { CoinState } from '../store/lib/CoinState';
 

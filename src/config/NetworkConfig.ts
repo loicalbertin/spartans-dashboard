@@ -1,16 +1,10 @@
+import { MappingState } from '@/store/standard/MappingState';
+import { allowChains } from '../lib/web3-react';
+import { EthNetworkState } from '../store/lib/EthNetworkState';
 import { BSCMainnetConfig } from './BSCMainnetConfig';
 import { FTMMainnetConfig } from './FTMMainnetConfig';
-import { MappingState } from '@/store/standard/MappingState';
-import { EthNetworkState } from '../store/lib/EthNetworkState';
-import { ETHKovanConfig } from './ETHKovanConfig';
-import { ETHMainnetConfig } from './ETHMainnetConfig';
-import { BSCTestnetConfig } from './BSCTestnetConfig';
-import { IotexMainnetConfig } from './IotexMainnetConfig';
-import { IotexTestnetConfig } from './IotexTestnetConfig';
-import { PolygonMainnetConfig } from './PolygonMainnetConfig';
-import { allowChains } from '../lib/web3-react';
 
-const EthChains = [BSCMainnetConfig, BSCTestnetConfig, ETHMainnetConfig, ETHKovanConfig, IotexTestnetConfig, IotexMainnetConfig, PolygonMainnetConfig, FTMMainnetConfig];
+const EthChains = [BSCMainnetConfig, FTMMainnetConfig];
 
 export const EthNetworkConfig = new EthNetworkState({
   allowChains,
@@ -20,7 +14,7 @@ export const EthNetworkConfig = new EthNetworkState({
     }
   },
   chain: new MappingState({
-    currentId: IotexMainnetConfig.chainId,
+    currentId: BSCMainnetConfig.chainId,
     map: EthChains.reduce((p, c) => {
       p[c.chainId] = c;
       return p;
