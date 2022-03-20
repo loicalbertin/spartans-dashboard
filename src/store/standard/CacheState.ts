@@ -1,8 +1,6 @@
 import { makeAutoObservable, toJS } from 'mobx';
-import { v4 as uuidv4 } from 'uuid';
-import { cacheStorage } from '../../lib/localforage';
-import { helper } from '../../lib/helper';
 import { eventBus } from '../../lib/event';
+import { cacheStorage } from '../../lib/localforage';
 
 export class CacheState<T = Record<string, string>> {
   id: string;
