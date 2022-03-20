@@ -1,9 +1,16 @@
 import React from 'react';
-import { IconProps, Image } from '@chakra-ui/react';
+import { ImageProps, Image } from '@chakra-ui/react';
 
-export const Logo = (props: IconProps) => {
+export const Logo = (props: ImageProps) => {
 
   return (
-    <Image src='images/spartans.png' boxSize="100px" />
+    <Image src='images/spartans.png' boxSize="80px" {...props} />
+  );
+};
+
+export const DarkLogo = (props: ImageProps) => {
+
+  return (
+    <Image src='images/dark-spartans.png' boxSize="80px" {...props} />
   );
 };
