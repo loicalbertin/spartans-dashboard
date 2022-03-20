@@ -11,7 +11,7 @@ import React from 'react';
 import { IoMoon, IoSunny } from 'react-icons/io5';
 import { getErrorMessage } from '../../lib/web3-react';
 import { useStore } from '../../store/index';
-import { Logo } from '../Logo';
+import { Logo, DarkLogo } from '../Logo';
 import { WalletInfo } from '../WalletInfo';
 
 export const Header = observer(() => {
@@ -36,10 +36,11 @@ export const Header = observer(() => {
           <Flex flex={{ base: 1, md: 'auto' }} justify={{ base: 'center', md: 'start' }}>
             <Link href="/">
               <Stack as={'a'} direction={'row'} alignItems={'center'} spacing={{ base: 2, sm: 4 }}>
-                <Icon as={Logo} w={{ base: 8 }} h={{ base: 8 }} />
+                <Icon as={Logo} w={{ base: 16, sm: 28 }} h={{ base: 16, sm:28 }} />
                 <Heading as={'h1'} fontSize={{base: 'large', md: 'x-large', lg: 'xx-large' }} display={{ base: 'none', sm: 'block' }}>
-                 Spartans Dashboard
+                 Spartans / Dark Spartans Dashboard
                 </Heading>
+                <Icon as={DarkLogo} w={{ base: 16 , sm: 28 }} h={{ base: 16 , sm:28 }} />
               </Stack>
             </Link>
           </Flex>
