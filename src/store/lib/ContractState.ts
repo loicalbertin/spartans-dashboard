@@ -1,10 +1,9 @@
-import { makeAutoObservable, reaction } from 'mobx';
-import { NetworkState } from './NetworkState';
+import { TransactionReceipt } from '@ethersproject/providers';
+import { makeAutoObservable } from 'mobx';
 import { CallParams } from '../../../type';
+import { helper } from '../../lib/helper';
 import { rootStore } from '../index';
 import { BooleanState } from '../standard/base';
-import { helper } from '../../lib/helper';
-import { TransactionReceipt } from '@ethersproject/providers';
 import { CacheState } from '../standard/CacheState';
 
 export interface ContractState {

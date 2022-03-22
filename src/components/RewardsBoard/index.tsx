@@ -10,6 +10,7 @@ import { action, reaction } from 'mobx';
 import { observer, useLocalObservable } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { BiWallet } from "react-icons/bi";
+import { BsYoutube } from "react-icons/bs";
 import { useStore } from '../../store/index';
 
 
@@ -114,6 +115,13 @@ export const RewardsBoard = observer(() => {
   return (
     <Container maxW="10xl" p={10}>
       <VStack direction={['column', 'row']} spacing='24px'>
+        <Text fontSize="md" fontWeight="bold" justifyContent={'center'} align={'center'} color={'teal.500'}>
+        <Link
+            href='https://youtu.be/KeRLRkDSkjQ'
+            color='teal.500'
+            isExternal>Check out Joey's tutorial about this dashboard {' '}<Icon as={BsYoutube} boxSize={5} />
+            </Link>
+        </Text>
         <Input size='lg'
           placeholder='Wallet address'
           isInvalid={god.currentNetwork.isAddress(store.walletAddress.value) === false}
@@ -219,10 +227,10 @@ export const RewardsBoard = observer(() => {
         <Divider />
 
         <Text align={'justify'}>
-          Reflections depends on trade volume to gas fee. Rewards are going to be accumulating in the background.
+          Reflections depend on trade volume to gas fee. Rewards are going to be accumulating in the background.
         </Text>
         <Text align={'justify'}>
-          However it needs to hit a certain threshold to justify gas fees to airdrop rewards. Larger holders will hit that threshold sooner but that doesn't impact lower holders rewards as they still accumulate.
+          However it needs to hit a certain threshold to justify gas fees to airdrop rewards. Larger holders will hit that threshold sooner but that does not impact lower holders rewards as they still accumulate.
         </Text>
 
         <Text align={'justify'}>

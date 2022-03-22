@@ -1,22 +1,21 @@
-import React from 'react';
-import { observer, useLocalStore } from 'mobx-react-lite';
-import { Modal, ModalContent, ModalOverlay, ModalHeader, ModalCloseButton, ModalBody } from '@chakra-ui/modal';
-import { useStore } from '../../store/index';
-import { eventBus } from '../../lib/event';
-import copy from 'copy-to-clipboard';
-import toast from 'react-hot-toast';
-import { Button, Text, Flex, Center, Link, Tooltip, Box, Icon, chakra, useColorModeValue } from '@chakra-ui/react';
-import { ExternalLinkIcon, CopyIcon } from '@chakra-ui/icons';
-import * as clipboard from 'clipboard-polyfill/text';
 import { helper } from '@/lib/helper';
-import { IotexMainnetConfig } from '../../config/IotexMainnetConfig';
-import { from } from '@iotexproject/iotex-address-ts';
 import { NetworkState } from '@/store/lib/NetworkState';
+import { CopyIcon, ExternalLinkIcon } from '@chakra-ui/icons';
+import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from '@chakra-ui/modal';
+import { Box, Button, Center, chakra, Flex, Link, Text, Tooltip, useColorModeValue } from '@chakra-ui/react';
+import { from } from '@iotexproject/iotex-address-ts';
+import * as clipboard from 'clipboard-polyfill/text';
+import copy from 'copy-to-clipboard';
+import { observer, useLocalObservable } from 'mobx-react-lite';
+import React from 'react';
+import toast from 'react-hot-toast';
+import { eventBus } from '../../lib/event';
+import { useStore } from '../../store/index';
 
 export const WalletInfo = observer(() => {
   const { god, lang } = useStore();
 
-  const store = useLocalStore(() => ({
+  const store = useLocalObservable(() => ({
     isTipOpen: false,
     isIOTipOpen: false,
     get visible() {

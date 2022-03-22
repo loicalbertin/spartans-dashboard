@@ -6,20 +6,18 @@ import { useWeb3React } from '@web3-react/core';
 import { BSCMainnetConfig } from 'config/BSCMainnetConfig';
 import { FTMMainnetConfig } from 'config/FTMMainnetConfig';
 import { Provider as MulticallProvider } from 'ethcall';
-import { observer, useLocalStore } from 'mobx-react-lite';
+import { observer, useLocalObservable } from 'mobx-react-lite';
 import React, { useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { ETHMainnetConfig } from '../../config/ETHMainnetConfig';
 import { eventBus } from '../../lib/event';
 import { useStore } from '../../store/index';
 
 export const ETHProvider = observer(({ children }) => {
   const { god, lang } = useStore();
   const { chainId, account, activate, active, library, deactivate, error, connector } = useWeb3React<Web3Provider>();
-
-  const store = useLocalStore(() => ({
+  const store = useLocalObservable(() => ({
     get defaultChain() {
-      return ETHMainnetConfig;
+      return BSCMainnetConfig;
     },
     logout() {
       deactivate();

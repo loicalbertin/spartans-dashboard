@@ -1,12 +1,10 @@
-import numeral from 'numeral';
-import BN from 'bignumber.js';
 import { createStandaloneToast } from '@chakra-ui/react';
+import { default as BigNumber, default as BN } from 'bignumber.js';
+import numeral from 'numeral';
 import { CallParams } from '../../type';
 import { ContractState, ReadFunction } from '../store/lib/ContractState';
-import { BigNumberState } from '../store/standard/BigNumberState';
-import BigNumber from 'bignumber.js';
 import { NumberState, StringState } from '../store/standard/base';
-import { CacheState } from '../store/standard/CacheState';
+import { BigNumberState } from '../store/standard/BigNumberState';
 
 export const helper = {
   toast: createStandaloneToast(),

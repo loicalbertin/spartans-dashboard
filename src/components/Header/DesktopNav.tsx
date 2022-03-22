@@ -1,6 +1,6 @@
 import React from 'react';
 import { Stack, BoxProps, Text, Button, Box, Img, Tag, ButtonGroup, chakra, useColorModeValue, Flex } from '@chakra-ui/react';
-import { observer, useObserver, useLocalStore } from 'mobx-react-lite';
+import { observer, useObserver, useLocalObservable } from 'mobx-react-lite';
 import { useStore } from '@/store/index';
 import { helper } from '@/lib/helper';
 import Jazzicon from '../Jazzicon';
@@ -8,7 +8,7 @@ import Jazzicon from '../Jazzicon';
 export const DesktopNav = observer((props: BoxProps) => {
   const { god, lang } = useStore();
 
-  const store = useLocalStore(() => ({
+  const store = useLocalObservable(() => ({
     showConnecter() {
       god.setShowConnecter(true);
     },

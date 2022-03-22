@@ -1,42 +1,18 @@
-import React from 'react';
-import { observer, useLocalStore } from 'mobx-react-lite';
-import { useStore } from '../../store/index';
-import { useWeb3React } from '@web3-react/core';
-import { injected, walletconnect } from '../../lib/web3-react';
-import { Modal, ModalContent, ModalOverlay } from '@chakra-ui/modal';
-import { Box, Flex, Text, HStack, VStack } from '@chakra-ui/layout';
-import {
-  Image,
-  Button,
-  Img,
-  Avatar,
-  AvatarBadge,
-  createStandaloneToast,
-  Center,
-  Divider,
-  AvatarGroup,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  useColorMode,
-  useColorModeValue,
-  Tabs,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel
-} from '@chakra-ui/react';
-import { metamaskUtils } from '../../lib/metaskUtils';
-import { useEffect } from 'react';
 import { Network } from '@/store/god';
-import { IotexMainnetConfig } from '../../config/IotexMainnetConfig';
-import { PolygonMainnetConfig } from '../../config/PolygonMainnetConfig';
+import { Box, Flex, HStack, Text } from '@chakra-ui/layout';
+import { Modal, ModalContent, ModalOverlay } from '@chakra-ui/modal';
+import {
+  Avatar,
+  AvatarBadge, AvatarGroup, createStandaloneToast, ModalBody, ModalCloseButton, ModalHeader, useColorModeValue
+} from '@chakra-ui/react';
+import { useWeb3React } from '@web3-react/core';
+import { observer, useLocalObservable } from 'mobx-react-lite';
+import React, { useEffect } from 'react';
 import { BSCMainnetConfig } from '../../config/BSCMainnetConfig';
-import { ETHMainnetConfig } from '../../config/ETHMainnetConfig';
-
-import { BSCTestnetConfig } from '../../config/BSCTestnetConfig';
-import { ETHKovanConfig } from '../../config/ETHKovanConfig';
-import { IotexTestnetConfig } from '../../config/IotexTestnetConfig';
+import { FTMMainnetConfig } from '../../config/FTMMainnetConfig';
+import { metamaskUtils } from '../../lib/metaskUtils';
+import { injected, walletconnect } from '../../lib/web3-react';
+import { useStore } from '../../store/index';
 
 const toast = createStandaloneToast();
 
@@ -44,15 +20,15 @@ export const WalletSelecter = observer(() => {
   const { god, lang } = useStore();
   const { active, error, activate } = useWeb3React();
 
-  const store = useLocalStore(() => ({
+  const store = useLocalObservable(() => ({
     get visible() {
       return god.eth.connector.showConnector;
     },
     get networks() {
-      return [ETHMainnetConfig, BSCMainnetConfig, IotexMainnetConfig, PolygonMainnetConfig];
+      return [BSCMainnetConfig, FTMMainnetConfig];
     },
     get testnet() {
-      return [ETHKovanConfig, BSCTestnetConfig, IotexTestnetConfig];
+      return [];
     },
     close() {
       god.eth.connector.showConnector = false;
@@ -81,12 +57,12 @@ export const WalletSelecter = observer(() => {
       }
     },
     connectInejct() {
-      god.setNetwork(Network.ETH);
+      god.setNetwork(Network.BSC);
       activate(injected);
       god.eth.connector.latestProvider.save('inject');
     },
     onWalletConnect() {
-      god.setNetwork(Network.ETH);
+      god.setNetwork(Network.BSC);
       activate(walletconnect);
       god.eth.connector.latestProvider.save('walletConnect');
     }
@@ -159,42 +135,18 @@ export const WalletSelecter = observer(() => {
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody py="6" bg={useColorModeValue('white', 'gray.800')} borderBottomRadius="15px" margin={`0 ${bW}  ${bW}   ${bW} `}>
-          {/* <Tabs variant="soft-rounded" align="center">
-            <TabList>
-              <Tab>Mainnet</Tab>
-              <Tab>Testnet</Tab>
-            </TabList>
-            <TabPanels>
-              <TabPanel>
-                <HStack justify="space-between" mb={6} px={4}>
-                  {store.networks.map((i) => (
-                    <Box display="flex" flexDirection="column" alignItems="center" key={i.chainId}>
-                      <Avatar src={i.logoUrl} cursor="pointer" bg="transparent" size="md" onClick={() => store.setChain(i.chainId)}>
-                        {god.currentChain.chainId == i.chainId && <AvatarBadge boxSize="1em" bg="green.500" />}
-                      </Avatar>
-                      <Text fontSize="xs" mt={1}>
-                        {i.name}
-                      </Text>
-                    </Box>
-                  ))}
-                </HStack>
-              </TabPanel>
-              <TabPanel>
-                <HStack justify="space-between" mb={6} px={4}>
-                  {store.testnet.map((i) => (
-                    <Box display="flex" flexDirection="column" alignItems="center" key={i.chainId}>
-                      <Avatar src={i.logoUrl} cursor="pointer" bg="transparent" size="md" onClick={() => store.setChain(i.chainId)}>
-                        {god.currentChain.chainId == i.chainId && <AvatarBadge boxSize="1em" bg="green.500" />}
-                      </Avatar>
-                      <Text fontSize="xs" mt={1}>
-                        {i.name}
-                      </Text>
-                    </Box>
-                  ))}
-                </HStack>
-              </TabPanel>
-            </TabPanels>
-          </Tabs> */}
+          <HStack justify="space-around" mb={6} px={4}>
+            {store.networks.map((i) => (
+              <Box display="flex" flexDirection="column" alignItems="center" key={i.chainId}>
+                <Avatar src={i.logoUrl} cursor="pointer" bg="transparent" size="md" onClick={() => store.setChain(i.chainId)}>
+                  {god.currentChain.chainId == i.chainId && <AvatarBadge boxSize="1em" bg="green.500" />}
+                </Avatar>
+                <Text fontSize="xs" mt={1}>
+                  {i.name}
+                </Text>
+              </Box>
+            ))}
+          </HStack>
           {!god.currentNetwork.account && (
             <Box>
               {/* <Divider /> */}

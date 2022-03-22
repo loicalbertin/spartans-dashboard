@@ -9,10 +9,7 @@ import { NumberState } from './standard/base';
 import { MappingState } from './standard/MappingState';
 
 export enum Network {
-  ETH = 'eth',
   BSC = 'bsc',
-  IOTEX = 'iotex',
-  POLYGON = 'polygon',
   FTM = 'ftm'
 }
 
@@ -21,9 +18,9 @@ export class GodStore {
   ftmNetwork: NetworkState;
   bscNetwork: NetworkState;
   network: MappingState<NetworkState> = new MappingState({
-    currentId: 'eth',
+    currentId: 'bsc',
     map: {
-      eth: EthNetworkConfig
+      bsc: EthNetworkConfig
     }
   });
 
@@ -36,16 +33,9 @@ export class GodStore {
     });
     EthNetworkConfig.god = this;
   }
-  get isIotxNetork() {
-    return this.network.currentId.value == 'iotex';
-  }
-  get isETHNetwork() {
-    //@ts-ignore
-    return ['eth', 'bsc'].includes(this.network.currentId.value);
-  }
 
   get eth(): EthNetworkState {
-    return this.network.map.eth as EthNetworkState;
+    return this.network.map.bsc as EthNetworkState;
   }
 
   get isConnect() {

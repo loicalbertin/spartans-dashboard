@@ -1,43 +1,18 @@
-import React from 'react';
-import {
-  Box,
-  Flex,
-  Container,
-  Stack,
-  useDisclosure,
-  IconButton,
-  useColorModeValue,
-  Icon,
-  useColorMode,
-  Heading,
-  Alert,
-  AlertIcon,
-  Text,
-  AlertDescription,
-  CloseButton,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverHeader,
-  PopoverBody,
-  PopoverFooter,
-  PopoverArrow,
-  PopoverCloseButton,
-  Link as LinkC
-} from '@chakra-ui/react';
-import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
-import { IoMoon, IoSunny } from 'react-icons/io5';
-import Link from 'next/link'
-import { Logo } from '../Logo';
 import { DesktopNav } from '@/components/Header/DesktopNav';
-import { observer } from 'mobx-react-lite';
-import { WalletInfo } from '../WalletInfo';
-import { useWeb3React } from '@web3-react/core';
-import { getErrorMessage } from '../../lib/web3-react';
-import { Button, Avatar, Image } from '@chakra-ui/react';
-import { useStore } from '../../store/index';
 import { helper } from '@/lib/helper';
+import {
+  Alert, AlertDescription, AlertIcon, Box, Button, CloseButton, Container, Flex, Heading, Icon, IconButton, Image, Link as LinkC, Popover, PopoverContent, PopoverTrigger, Stack, Text, useColorMode, useColorModeValue
+} from '@chakra-ui/react';
+import { useWeb3React } from '@web3-react/core';
 import { NoEthereumProviderError } from '@web3-react/injected-connector';
+import { observer } from 'mobx-react-lite';
+import Link from 'next/link';
+import React from 'react';
+import { IoMoon, IoSunny } from 'react-icons/io5';
+import { getErrorMessage } from '../../lib/web3-react';
+import { useStore } from '../../store/index';
+import { Logo, DarkLogo } from '../Logo';
+import { WalletInfo } from '../WalletInfo';
 
 export const Header = observer(() => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -61,10 +36,11 @@ export const Header = observer(() => {
           <Flex flex={{ base: 1, md: 'auto' }} justify={{ base: 'center', md: 'start' }}>
             <Link href="/">
               <Stack as={'a'} direction={'row'} alignItems={'center'} spacing={{ base: 2, sm: 4 }}>
-                <Icon as={Logo} w={{ base: 8 }} h={{ base: 8 }} />
+                <Icon as={Logo} w={{ base: 16, sm: 28 }} h={{ base: 16, sm:28 }} />
                 <Heading as={'h1'} fontSize={{base: 'large', md: 'x-large', lg: 'xx-large' }} display={{ base: 'none', sm: 'block' }}>
-                 Spartans Dashboard
+                 Spartans / Dark Spartans Dashboard
                 </Heading>
+                <Icon as={DarkLogo} w={{ base: 16 , sm: 28 }} h={{ base: 16 , sm:28 }} />
               </Stack>
             </Link>
           </Flex>

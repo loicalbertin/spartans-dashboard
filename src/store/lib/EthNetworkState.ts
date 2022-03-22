@@ -1,20 +1,17 @@
-import { makeAutoObservable } from 'mobx';
-import { Contract } from '@ethersproject/contracts';
 import { Signer } from '@ethersproject/abstract-signer';
-import { JsonRpcProvider, TransactionResponse, BaseProvider } from '@ethersproject/providers';
-import { utils } from 'ethers';
+import { Contract } from '@ethersproject/contracts';
+import { BaseProvider, JsonRpcProvider, TransactionResponse } from '@ethersproject/providers';
+import BigNumber from 'bignumber.js';
 import { Contract as MuticallContract, Provider as MulticallProvider } from 'ethcall';
+import { utils } from 'ethers';
+import { makeAutoObservable } from 'mobx';
+import { CallParams } from '../../../type';
+import { helper } from '../../lib/helper';
+import { GodStore } from '../god';
 import { MappingState } from '../standard/MappingState';
+import { StorageState } from '../standard/StorageState';
 import { ChainState } from './ChainState';
 import { NetworkState } from './NetworkState';
-import { StorageState } from '../standard/StorageState';
-import BigNumber from 'bignumber.js';
-import { CallParams } from '../../../type';
-import { GodStore } from '../god';
-import { BigNumberState } from '../standard/BigNumberState';
-import { NumberState, StringState } from '../standard/base';
-import { ReadFunction } from './ContractState';
-import { helper } from '../../lib/helper';
 
 export class EthNetworkState implements NetworkState {
   god: GodStore;
