@@ -227,7 +227,7 @@ export const RewardsBoard = observer(() => {
         <Divider />
 
         <Text align={'justify'}>
-          Reflections depends on trade volume to gas fee. Rewards are going to be accumulating in the background.
+          Reflections depend on trade volume to gas fee. Rewards are going to be accumulating in the background.
         </Text>
         <Text align={'justify'}>
           However it needs to hit a certain threshold to justify gas fees to airdrop rewards. Larger holders will hit that threshold sooner but that does not impact lower holders rewards as they still accumulate.
