@@ -1,16 +1,17 @@
-import React from 'react';
-import { observer, useLocalStore } from 'mobx-react-lite';
-import { useStore } from '../../store/index';
+import { injected } from '@/lib/web3-react';
+import { EthNetworkState } from '@/store/lib/EthNetworkState';
+import { MappingState } from '@/store/standard/MappingState';
+import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
-import { Web3Provider } from '@ethersproject/providers';
-import { useEffect } from 'react';
+import { BSCMainnetConfig } from 'config/BSCMainnetConfig';
+import { FTMMainnetConfig } from 'config/FTMMainnetConfig';
+import { Provider as MulticallProvider } from 'ethcall';
+import { observer, useLocalStore } from 'mobx-react-lite';
+import React, { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { ETHMainnetConfig } from '../../config/ETHMainnetConfig';
-import { Provider as MulticallProvider } from 'ethcall';
-import { injected } from '@/lib/web3-react';
 import { eventBus } from '../../lib/event';
-import { _ } from '@/lib/lodash';
-import { BSCMainnetConfig } from 'config/BSCMainnetConfig';
+import { useStore } from '../../store/index';
 
 export const ETHProvider = observer(({ children }) => {
   const { god, lang } = useStore();
@@ -70,6 +71,45 @@ export const ETHProvider = observer(({ children }) => {
     return () => {
       eventBus.removeListener('wallet.logout', store.logout);
     };
+  }, []);
+
+
+  useEffect(()=> {
+    const provider = new JsonRpcProvider(FTMMainnetConfig.rpcUrl);
+    const mcp = new MulticallProvider();
+    mcp.provider= provider;
+    mcp.multicall = { address: FTMMainnetConfig.info.multicallAddr, block: 0 };
+    mcp.multicall2 = { address: FTMMainnetConfig.info.multicall2Addr, block: 0 };
+    god.ftmNetwork = new EthNetworkState({
+      god: god,
+      allowChains: [FTMMainnetConfig.chainId],
+      chain: new MappingState({
+        currentId: FTMMainnetConfig.chainId,
+        map: { 250: FTMMainnetConfig }
+      }),
+      provider: provider,
+      signer: library ? library.getSigner() : null,
+      multiCall: mcp
+    });
+  }, []);
+
+  useEffect(()=> {
+    const provider = new JsonRpcProvider(BSCMainnetConfig.rpcUrl);
+    const mcp = new MulticallProvider();
+    mcp.provider= provider;
+    mcp.multicall = { address: BSCMainnetConfig.info.multicallAddr, block: 0 };
+    mcp.multicall2 = { address: BSCMainnetConfig.info.multicall2Addr, block: 0 };
+    god.bscNetwork = new EthNetworkState({
+      god: god,
+      allowChains: [BSCMainnetConfig.chainId],
+      chain: new MappingState({
+        currentId: BSCMainnetConfig.chainId,
+        map: { [BSCMainnetConfig.chainId]: BSCMainnetConfig }
+      }),
+      provider: provider,
+      signer: library ? library.getSigner() : null,
+      multiCall: mcp
+    });
   }, []);
 
   return <></>;

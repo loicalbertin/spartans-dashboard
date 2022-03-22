@@ -1,23 +1,25 @@
-import { NetworkState } from './lib/NetworkState';
 import { makeAutoObservable } from 'mobx';
-import { MappingState } from './standard/MappingState';
 import { EthNetworkConfig } from '../config/NetworkConfig';
+import { eventBus } from '../lib/event';
 import { ChainState } from './lib/ChainState';
 import { EthNetworkState } from './lib/EthNetworkState';
+import { NetworkState } from './lib/NetworkState';
 import RootStore from './root';
 import { NumberState } from './standard/base';
-import { ValueOf } from 'type-fest';
-import { eventBus } from '../lib/event';
+import { MappingState } from './standard/MappingState';
 
 export enum Network {
   ETH = 'eth',
   BSC = 'bsc',
   IOTEX = 'iotex',
-  POLYGON = 'polygon'
+  POLYGON = 'polygon',
+  FTM = 'ftm'
 }
 
 export class GodStore {
   rootStore: RootStore;
+  ftmNetwork: NetworkState;
+  bscNetwork: NetworkState;
   network: MappingState<NetworkState> = new MappingState({
     currentId: 'eth',
     map: {
