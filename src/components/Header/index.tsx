@@ -84,7 +84,7 @@ export const Header = observer(() => {
       </Flex>
       <Container maxW={'7xl'} size="">
         {error && (
-          <Alert status="error" align={'center'}>
+          <Alert status="error" alignContent={'center'}>
             <AlertIcon />
             {error instanceof NoEthereumProviderError ?
               <AlertDescription >

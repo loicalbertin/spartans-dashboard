@@ -1,9 +1,24 @@
-import { isHexString, isValidAddress, isValidChecksumAddress, addHexPrefix, toChecksumAddress, zeroAddress } from "ethereumjs-util"
+import { isValidAddress, isValidChecksumAddress, addHexPrefix, toChecksumAddress, zeroAddress } from "ethereumjs-util"
 
 export const BURN_ADDRESS = zeroAddress()
 
 export function isBurnAddress(address) {
   return address === BURN_ADDRESS
+}
+
+/**
+ * Is the string a hex string.
+ *
+ * @method check if string is hex string of specific length
+ * @param {String} value
+ * @returns {Boolean} output the string is a hex string
+ */
+ function isHexString(value) {
+  if (typeof(value) !== 'string' || !value.match(/^0x[0-9A-Fa-f]*$/)) {
+    return false;
+  }
+
+  return true;
 }
 
 /**
