@@ -8,6 +8,7 @@ export class BigNumberState {
   decimals = 18;
   fixed = 6;
   formatter?: Function;
+  numeralFormat?: string;
   constructor(args: Partial<BigNumberState>) {
     Object.assign(this, args);
     makeAutoObservable(this);
@@ -21,7 +22,8 @@ export class BigNumberState {
     if (this.loading) return '...';
     if (this.formatter) return this.formatter(this);
     return helper.number.toPrecisionFloor(new BigNumber(this.value).dividedBy(10 ** decimals).toFixed(), {
-      decimals: fixed
+      decimals: fixed,
+      format: this.numeralFormat,
     });
   }
   setDecimals(decimals: number) {

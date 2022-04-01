@@ -17,6 +17,7 @@ class TokenState {
   chainId: number = 0;
   decimals: number = 18;
   fixed: number = 6;
+  numeralFormat = '';
 
   network: NetworkState = EthNetworkConfig;
   allowanceForRouter = new ReadFunction<[string, string], BigNumberState>({ name: 'allowance', contract: this, value: new BigNumberState({}) });
@@ -28,7 +29,7 @@ class TokenState {
   y;
   constructor(args: Partial<TokenState>) {
     Object.assign(this, args);
-    this._balance = new BigNumberState({ decimals: this.decimals, loading: true, fixed: this.fixed });
+    this._balance = new BigNumberState({ decimals: this.decimals, loading: true, fixed: this.fixed, numeralFormat: this.numeralFormat });
     if (this.isEther) {
       this.allowanceForRouter.value.setValue(new BigNumber(ethers.constants.MaxUint256.toString()));
     }

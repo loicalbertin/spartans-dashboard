@@ -4,7 +4,7 @@ import TokenState from '@/store/lib/TokenState';
 import { BooleanState, StringState } from '@/store/standard/base';
 import { BigNumberState } from '@/store/standard/BigNumberState';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
-import { Box, Container, Divider, Grid, GridItem, HStack, Icon, Image, Input, Link, SimpleGrid, Text, VStack, Wrap, WrapItem } from '@chakra-ui/react';
+import { Box, Container, Divider, Grid, GridItem, HStack, Icon, Image, Input, Link, SimpleGrid, Skeleton, Text, VStack, Wrap, WrapItem } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
 import { action, reaction } from 'mobx';
 import { observer, useLocalObservable } from 'mobx-react-lite';
@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import { BiWallet } from "react-icons/bi";
 import { BsYoutube } from "react-icons/bs";
 import { useStore } from '../../store/index';
+import { CurrencyLoader } from '../CurrencyLoader';
 
 
 export const RewardsBoard = observer(() => {
@@ -19,18 +20,28 @@ export const RewardsBoard = observer(() => {
 
   const store = useLocalObservable(() => ({
     walletAddress: new StringState(),
-    spartanToken: new TokenState({ address: "0xbcfe392E778dbB59DcAd624F10f7fa8C4a910B1e", abi: spartanAbi, fixed: 6 }),
-    knightToken: new TokenState({ address: "0xd23811058eb6e7967d9a00dc3886e75610c4abba", abi: spartanAbi, fixed: 6 }),
-    totalDividendsDistributed: new BigNumberState({ fixed: 6 }),
-    accountTotalDividendsDistributed: new BigNumberState({ fixed: 6 }),
-    accountWithdrawableDividends: new BigNumberState({ fixed: 6 }),
-    darkSpartanToken: new TokenState({ address: "0x63aad0448f58ae1b98d75456cfc6f39235e353f6", abi: spartanAbi, fixed: 6 }),
-    darkKnightToken: new TokenState({ address: "0x6cc0e0aedbbd3c35283e38668d959f6eb3034856", abi: spartanAbi, fixed: 6 }),
-    darkTotalDividendsDistributed: new BigNumberState({ fixed: 6 }),
-    darkAccountTotalDividendsDistributed: new BigNumberState({ fixed: 6 }),
-    darkAccountWithdrawableDividends: new BigNumberState({ fixed: 6 }),
-    isQualifiedForRewards: new BooleanState(),
-    isQualifiedForDarkRewards: new BooleanState(),
+    spartanToken: new TokenState({ address: "0xbcfe392E778dbB59DcAd624F10f7fa8C4a910B1e", abi: spartanAbi, fixed: 6, numeralFormat: '0[.]00' }),
+    knightToken: new TokenState({ address: "0xd23811058eb6e7967d9a00dc3886e75610c4abba", abi: spartanAbi, fixed: 6, numeralFormat: '0[.]00' }),
+    totalDividendsDistributed: new BigNumberState({ fixed: 6, loading: true, numeralFormat: '0[.]00' }),
+    accountTotalDividendsDistributed: new BigNumberState({ fixed: 6, loading: true, numeralFormat: '0[.]00' }),
+    accountWithdrawableDividends: new BigNumberState({ fixed: 6, loading: true, numeralFormat: '0[.]00' }),
+    darkSpartanToken: new TokenState({ address: "0x63aad0448f58ae1b98d75456cfc6f39235e353f6", abi: spartanAbi, fixed: 6, numeralFormat: '0[.]00' }),
+    darkKnightToken: new TokenState({ address: "0x6cc0e0aedbbd3c35283e38668d959f6eb3034856", abi: spartanAbi, fixed: 6, numeralFormat: '0[.]00' }),
+    darkTotalDividendsDistributed: new BigNumberState({ fixed: 6, loading: true, numeralFormat: '0[.]00' }),
+    darkAccountTotalDividendsDistributed: new BigNumberState({ fixed: 6, loading: true, numeralFormat: '0[.]00' }),
+    darkAccountWithdrawableDividends: new BigNumberState({ fixed: 6, loading: true, numeralFormat: '0[.]00' }),
+    isQualifiedForRewards: new BooleanState({ value: true }),
+    isQualifiedForDarkRewards: new BooleanState({ value: true }),
+    resetWalletLoaders() {
+      this.spartanToken._balance.loading = true;
+      this.darkSpartanToken._balance.loading = true;
+      this.knightToken._balance.loading = true;
+      this.darkKnightToken._balance.loading = true;
+      this.accountTotalDividendsDistributed.loading = true;
+      this.accountWithdrawableDividends.loading = true;
+      this.darkAccountTotalDividendsDistributed.loading = true;
+      this.darkAccountWithdrawableDividends.loading = true;
+    },
     async updateCommonData() {
       await god.bscNetwork.multicall(
         [
@@ -93,13 +104,13 @@ export const RewardsBoard = observer(() => {
     reaction(
       () => store.spartanToken._balance.value,
       val => {
-        action('setQualifiedForRewards', () => (store.isQualifiedForRewards.setValue(val.gte(new BigNumber(50000 * (10 ** 18))) || val.lte(new BigNumber(0)) )))();
+        action('setQualifiedForRewards', () => (store.isQualifiedForRewards.setValue(val.gte(new BigNumber(50000 * (10 ** 18))) || val.lte(new BigNumber(0)))))();
       });
 
     reaction(
       () => store.darkSpartanToken._balance.value,
       val => {
-        action('setQualifiedForDarkRewards', () => (store.isQualifiedForDarkRewards.setValue(val.gte(new BigNumber(50000 * (10 ** 18)))  || val.lte(new BigNumber(0)) )))();
+        action('setQualifiedForDarkRewards', () => (store.isQualifiedForDarkRewards.setValue(val.gte(new BigNumber(50000 * (10 ** 18))) || val.lte(new BigNumber(0)))))();
       });
 
     setInterval(() => {
@@ -116,17 +127,18 @@ export const RewardsBoard = observer(() => {
     <Container maxW="10xl" p={10}>
       <VStack direction={['column', 'row']} spacing='24px'>
         <Text fontSize="md" fontWeight="bold" justifyContent={'center'} align={'center'} color={'teal.500'}>
-        <Link
+          <Link
             href='https://youtu.be/KeRLRkDSkjQ'
             color='teal.500'
             isExternal>Check out Joey's tutorial about this dashboard {' '}<Icon as={BsYoutube} boxSize={5} />
-            </Link>
+          </Link>
         </Text>
         <Input size='lg'
           placeholder='Wallet address'
           isInvalid={god.currentNetwork.isAddress(store.walletAddress.value) === false}
           value={store.walletAddress.value}
           onChange={(e) => {
+            store.resetWalletLoaders();
             store.walletAddress.setValue(e.target.value);
           }} />
 
@@ -138,22 +150,10 @@ export const RewardsBoard = observer(() => {
             <Text fontSize='xx-large' >In your wallet</Text>
             <Box w='100%' p={4} borderWidth='1px' borderRadius='lg'>
               <Icon as={BiWallet} boxSize={8} />
-              <HStack spacing='4px' placeContent={'flex-end'}>
-                <Text fontSize='x-large' fontWeight='bold'>{store.spartanToken.balance.format}</Text>
-                <Image src='images/spartans.png' boxSize="32px" />
-              </HStack>
-              <HStack placeContent={'flex-end'}>
-                <Text fontSize='x-large' fontWeight='bold' >{store.knightToken.balance.format}</Text>
-                <Image src='images/knight-icon.png' boxSize="32px" />
-              </HStack>
-              <HStack spacing='4px' placeContent={'flex-end'}>
-                <Text fontSize='x-large' fontWeight='bold'>{store.darkSpartanToken.balance.format}</Text>
-                <Image src='images/dark-spartans.png' boxSize="32px" />
-              </HStack>
-              <HStack placeContent={'flex-end'}>
-                <Text fontSize='x-large' fontWeight='bold' >{store.darkKnightToken.balance.format}</Text>
-                <Image src='images/dKNIGHT.svg' boxSize="32px" />
-              </HStack>
+              <CurrencyLoader number={store.spartanToken._balance} imageRef='images/spartans.png' />
+              <CurrencyLoader number={store.knightToken._balance} imageRef='images/knight-icon.png' />
+              <CurrencyLoader number={store.darkSpartanToken._balance} imageRef='images/dark-spartans.png' />
+              <CurrencyLoader number={store.darkKnightToken._balance} imageRef='images/dKNIGHT.svg' />
             </Box>
             <Text align={'center'}
               hidden={store.isQualifiedForRewards.value}>
@@ -181,25 +181,13 @@ export const RewardsBoard = observer(() => {
             </GridItem>
             <GridItem w='100%'>
               <Text align='center' fontSize='x-large'>Total earned</Text>
-              <HStack placeContent={'flex-end'}>
-                <Text fontSize='x-large' fontWeight='bold'>{store.accountTotalDividendsDistributed.format}</Text>
-                <Image src='images/knight-icon.png' boxSize="32px" />
-              </HStack>
-              <HStack placeContent={'flex-end'}>
-                <Text fontSize='x-large' fontWeight='bold'>{store.darkAccountTotalDividendsDistributed.format}</Text>
-                <Image src='images/dKNIGHT.svg' boxSize="32px" />
-              </HStack>
+              <CurrencyLoader number={store.accountTotalDividendsDistributed} imageRef='images/knight-icon.png' />
+              <CurrencyLoader number={store.darkAccountTotalDividendsDistributed} imageRef='images/dKNIGHT.svg' />
             </GridItem>
             <GridItem w='100%'>
               <Text align='center' fontSize='x-large'>Accumulating Rewards (pending)</Text>
-              <HStack placeContent={'flex-end'}>
-                <Text fontSize='x-large' fontWeight='bold'>{store.accountWithdrawableDividends.format}</Text>
-                <Image src='images/knight-icon.png' boxSize="32px" />
-              </HStack>
-              <HStack placeContent={'flex-end'}>
-                <Text fontSize='x-large' fontWeight='bold'>{store.darkAccountWithdrawableDividends.format}</Text>
-                <Image src='images/dKNIGHT.svg' boxSize="32px" />
-              </HStack>
+              <CurrencyLoader number={store.accountWithdrawableDividends} imageRef='images/knight-icon.png' />
+              <CurrencyLoader number={store.darkAccountWithdrawableDividends} imageRef='images/dKNIGHT.svg' />
             </GridItem>
           </Grid>
 
@@ -211,13 +199,17 @@ export const RewardsBoard = observer(() => {
           <Wrap align='center' spacing='20px' justify='center'>
             <WrapItem>
               <HStack placeContent={'center'}>
-                <Text align={'center'} fontSize='x-large' fontWeight='bold'>{store.totalDividendsDistributed.format}</Text>
+                <Skeleton minWidth={'80px'} isLoaded={!store.totalDividendsDistributed.loading}>
+                  <Text align={'center'} fontSize='x-large' fontWeight='bold'>{store.totalDividendsDistributed.format}</Text>
+                </Skeleton>
                 <Image src='images/knight-icon.png' boxSize="32px" />
               </HStack>
             </WrapItem>
             <WrapItem>
               <HStack placeContent={'center'}>
-                <Text align={'center'} fontSize='x-large' fontWeight='bold'>{store.darkTotalDividendsDistributed.format}</Text>
+                <Skeleton minWidth={'80px'} isLoaded={!store.darkTotalDividendsDistributed.loading}>
+                  <Text align={'center'} fontSize='x-large' fontWeight='bold'>{store.darkTotalDividendsDistributed.format}</Text>
+                </Skeleton>
                 <Image src='images/dKNIGHT.svg' boxSize="32px" />
               </HStack>
             </WrapItem>
@@ -239,9 +231,9 @@ export const RewardsBoard = observer(() => {
             href='https://info-121.gitbook.io/welcome-to-the-spartan-army/'
             color='teal.500'
             isExternal>Spartan whitepaper<ExternalLinkIcon mx='2px' /></Link>{' '} for BSC and <Link
-            href='https://info-121.gitbook.io/spartans-army-ftm/'
-            color='teal.500'
-            isExternal>Dark Spartan whitepaper<ExternalLinkIcon mx='2px' /></Link>{' '} for Fantom.
+              href='https://info-121.gitbook.io/spartans-army-ftm/'
+              color='teal.500'
+              isExternal>Dark Spartan whitepaper<ExternalLinkIcon mx='2px' /></Link>{' '} for Fantom.
         </Text>
       </VStack >
     </Container >

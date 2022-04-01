@@ -40,7 +40,7 @@ export const Header = observer(() => {
                 <Heading as={'h1'} fontSize={{base: 'large', md: 'x-large', lg: 'xx-large' }} display={{ base: 'none', sm: 'block' }}>
                  Spartans / Dark Spartans Dashboard
                 </Heading>
-                <Icon as={DarkLogo} w={{ base: 16 , sm: 28 }} h={{ base: 16 , sm:28 }} />
+                <Icon as={DarkLogo} transform={'scaleX(-1)'} w={{ base: 16 , sm: 28 }} h={{ base: 16 , sm:28 }} />
               </Stack>
             </Link>
           </Flex>
