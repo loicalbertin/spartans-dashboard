@@ -13,9 +13,10 @@ import { WalletSelecter } from '../components/WalletSelecter/index';
 import { Footer } from '@/components/Footer';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const { lang, god } = useStore();
+  const { lang, god, currencies } = useStore();
   useEffect(() => {
     lang.init();
+    currencies.init();
     setInterval(() => {
       god.pollingData();
     }, 15000);

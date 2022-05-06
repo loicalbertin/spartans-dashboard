@@ -1,7 +1,10 @@
 import { DesktopNav } from '@/components/Header/DesktopNav';
 import { helper } from '@/lib/helper';
+import { HamburgerIcon } from '@chakra-ui/icons';
 import {
-  Alert, AlertDescription, AlertIcon, Box, Button, CloseButton, Container, Flex, Heading, Icon, IconButton, Image, Link as LinkC, Popover, PopoverContent, PopoverTrigger, Stack, Text, useColorMode, useColorModeValue
+  Alert, AlertDescription, AlertIcon, Box, CloseButton, Container,
+  Drawer, DrawerBody, DrawerCloseButton, DrawerContent, Flex, Heading, HStack, Icon, IconButton,
+  Link as LinkC, Stack, useColorMode, useColorModeValue, useDisclosure
 } from '@chakra-ui/react';
 import { useWeb3React } from '@web3-react/core';
 import { NoEthereumProviderError } from '@web3-react/injected-connector';
@@ -10,14 +13,15 @@ import Link from 'next/link';
 import React from 'react';
 import { IoMoon, IoSunny } from 'react-icons/io5';
 import { getErrorMessage } from '../../lib/web3-react';
-import { useStore } from '../../store/index';
-import { Logo, DarkLogo } from '../Logo';
+import { CurrenciesPopover } from '../CurrenciesPopover';
+import { DarkLogo, Logo } from '../Logo';
 import { WalletInfo } from '../WalletInfo';
 
 export const Header = observer(() => {
+  const { isOpen: isMobileNavOpen, onToggle, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const { error } = useWeb3React();
-  const { lang } = useStore();
+
   return (
     <Box>
       <Flex
@@ -32,52 +36,39 @@ export const Header = observer(() => {
         }}
       >
         <Container as={Flex} maxW={'7xl'} align={'center'}>
+          <Flex flex={{ base: 1, md: 'auto' }} display={{ base: 'flex', md: 'none' }}>
+            <IconButton onClick={onToggle} icon={<HamburgerIcon w={5} h={5} />} variant={'ghost'} size={'sm'} aria-label={'Toggle Navigation'} />
+            <Drawer size={'xs'} isOpen={isMobileNavOpen} onClose={onClose} placement='top'>
+              <DrawerContent>
+                <DrawerCloseButton />
+                <DrawerBody id='mobileDrawerBody'>
+                  <HStack>
+                    <DesktopNav />
+                    <IconButton borderRadius="12" aria-label={'Toggle Color Mode'} onClick={toggleColorMode} icon={colorMode == 'light' ? <IoMoon size={18} /> : <IoSunny size={18} />} />
+                    <CurrenciesPopover />
+                  </HStack>
+                </DrawerBody>
+              </DrawerContent>
+            </Drawer>
+          </Flex>
 
-          <Flex flex={{ base: 1, md: 'auto' }} justify={{ base: 'center', md: 'start' }}>
+          <Flex justify={{ base: 'center', md: 'start' }}>
             <Link href="/">
               <Stack as={'a'} direction={'row'} alignItems={'center'} spacing={{ base: 2, sm: 4 }}>
-                <Icon as={Logo} w={{ base: 16, sm: 28 }} h={{ base: 16, sm:28 }} />
-                <Heading as={'h1'} fontSize={{base: 'large', md: 'x-large', lg: 'xx-large' }} display={{ base: 'none', sm: 'block' }}>
-                 Spartans / Dark Spartans Dashboard
+                <Icon as={Logo} w={{ base: 16, sm: 28 }} h={{ base: 16, sm: 28 }} />
+                <Heading as={'h1'} fontSize={{ base: 'large', md: 'x-large', lg: 'xx-large' }} display={{ base: 'block', sm: 'block' }}>
+                  Spartans / Dark Spartans Dashboard
                 </Heading>
-                <Icon as={DarkLogo} transform={'scaleX(-1)'} w={{ base: 16 , sm: 28 }} h={{ base: 16 , sm:28 }} />
+                <Icon as={DarkLogo} transform={'scaleX(-1)'} w={{ base: 16, sm: 28 }} h={{ base: 16, sm: 28 }} />
               </Stack>
             </Link>
           </Flex>
 
-          <Stack direction={'row'} align={'center'} spacing={2} flex={{ base: 1, md: 'auto' }} justify={'flex-end'}>
+          <Stack display={{ base: 'none', sm: 'flex' }} direction={'row'} align={'center'} spacing={2} flex={{ base: 1, md: 'auto' }} justify={'flex-end'}>
             <Flex display={{ base: 'flex', md: 'flex' }} ml={10}>
               <DesktopNav />
             </Flex>
-            {/* <Popover variant="hover" closeOnBlur>
-              {({ onClose }) => (
-                <>
-                  <PopoverTrigger>
-                    <Button borderRadius="12">
-                        <Image src={`/images/${lang.lang}.png`} boxSize="15px"/>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent w="40" px="2" py="2">
-                    {lang.configs.map((i) => (
-                      <Button
-                        isActive={i.lang===lang.lang}
-                        bg={'none'}
-                        key={i.lang}
-                        onClick={() => {
-                          onClose();
-                          lang.setLang(i.lang);
-                        }}
-                      >
-                        <Image src={`/images/${i.lang}.png`} boxSize="15px" />
-                        <Text ml="8px" fontSize="sm">
-                          {i.name}
-                        </Text>
-                      </Button>
-                    ))}
-                  </PopoverContent>
-                </>
-              )}
-            </Popover> */}
+            <CurrenciesPopover addPortal />
             <IconButton borderRadius="12" aria-label={'Toggle Color Mode'} onClick={toggleColorMode} icon={colorMode == 'light' ? <IoMoon size={18} /> : <IoSunny size={18} />} />
           </Stack>
         </Container>

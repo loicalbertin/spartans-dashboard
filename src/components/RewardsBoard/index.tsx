@@ -4,7 +4,7 @@ import TokenState from '@/store/lib/TokenState';
 import { BooleanState, StringState } from '@/store/standard/base';
 import { BigNumberState } from '@/store/standard/BigNumberState';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
-import { Box, Container, Divider, Grid, GridItem, HStack, Icon, Image, Input, Link, SimpleGrid, Skeleton, Text, VStack, Wrap, WrapItem } from '@chakra-ui/react';
+import { Box, Container, Divider, Grid, GridItem, Icon, Input, Link, SimpleGrid, Text, VStack, Wrap, WrapItem } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
 import { action, reaction } from 'mobx';
 import { observer, useLocalObservable } from 'mobx-react-lite';
@@ -16,8 +16,7 @@ import { CurrencyLoader } from '../CurrencyLoader';
 
 
 export const RewardsBoard = observer(() => {
-  const { god } = useStore();
-
+  const { god, currencies } = useStore();
   const store = useLocalObservable(() => ({
     walletAddress: new StringState(),
     spartanToken: new TokenState({ address: "0xbcfe392E778dbB59DcAd624F10f7fa8C4a910B1e", abi: spartanAbi, fixed: 6, numeralFormat: '0[.]00' }),
@@ -150,10 +149,10 @@ export const RewardsBoard = observer(() => {
             <Text fontSize='xx-large' >In your wallet</Text>
             <Box w='100%' p={4} borderWidth='1px' borderRadius='lg'>
               <Icon as={BiWallet} boxSize={8} />
-              <CurrencyLoader number={store.spartanToken._balance} imageRef='images/spartans.png' />
-              <CurrencyLoader number={store.knightToken._balance} imageRef='images/knight-icon.png' />
-              <CurrencyLoader number={store.darkSpartanToken._balance} imageRef='images/dark-spartans.png' />
-              <CurrencyLoader number={store.darkKnightToken._balance} imageRef='images/dKNIGHT.svg' />
+              <CurrencyLoader number={store.spartanToken._balance} imageRef='images/spartans.png' coinPrice={currencies.spartanCoinPrices} />
+              <CurrencyLoader number={store.knightToken._balance} imageRef='images/knight-icon.png' coinPrice={currencies.knightCoinPrices} />
+              <CurrencyLoader number={store.darkSpartanToken._balance} imageRef='images/dark-spartans.png' coinPrice={currencies.darkSpartanCoinPrices} />
+              <CurrencyLoader number={store.darkKnightToken._balance} imageRef='images/dKNIGHT.svg' coinPrice={currencies.darkKnightCoinPrices} />
             </Box>
             <Text align={'center'}
               hidden={store.isQualifiedForRewards.value}>
@@ -181,13 +180,13 @@ export const RewardsBoard = observer(() => {
             </GridItem>
             <GridItem w='100%'>
               <Text align='center' fontSize='x-large'>Total earned</Text>
-              <CurrencyLoader number={store.accountTotalDividendsDistributed} imageRef='images/knight-icon.png' />
-              <CurrencyLoader number={store.darkAccountTotalDividendsDistributed} imageRef='images/dKNIGHT.svg' />
+              <CurrencyLoader number={store.accountTotalDividendsDistributed} imageRef='images/knight-icon.png' coinPrice={currencies.knightCoinPrices} />
+              <CurrencyLoader number={store.darkAccountTotalDividendsDistributed} imageRef='images/dKNIGHT.svg' coinPrice={currencies.darkKnightCoinPrices} />
             </GridItem>
             <GridItem w='100%'>
               <Text align='center' fontSize='x-large'>Accumulating Rewards (pending)</Text>
-              <CurrencyLoader number={store.accountWithdrawableDividends} imageRef='images/knight-icon.png' />
-              <CurrencyLoader number={store.darkAccountWithdrawableDividends} imageRef='images/dKNIGHT.svg' />
+              <CurrencyLoader number={store.accountWithdrawableDividends} imageRef='images/knight-icon.png' coinPrice={currencies.knightCoinPrices} />
+              <CurrencyLoader number={store.darkAccountWithdrawableDividends} imageRef='images/dKNIGHT.svg' coinPrice={currencies.darkKnightCoinPrices} />
             </GridItem>
           </Grid>
 
@@ -198,20 +197,10 @@ export const RewardsBoard = observer(() => {
           <Text fontSize='xx-large'>Total Rewards Distributed to Holders</Text>
           <Wrap align='center' spacing='20px' justify='center'>
             <WrapItem>
-              <HStack placeContent={'center'}>
-                <Skeleton minWidth={'80px'} isLoaded={!store.totalDividendsDistributed.loading}>
-                  <Text align={'center'} fontSize='x-large' fontWeight='bold'>{store.totalDividendsDistributed.format}</Text>
-                </Skeleton>
-                <Image src='images/knight-icon.png' boxSize="32px" />
-              </HStack>
+              <CurrencyLoader number={store.totalDividendsDistributed} imageRef='images/knight-icon.png' coinPrice={currencies.knightCoinPrices} />
             </WrapItem>
             <WrapItem>
-              <HStack placeContent={'center'}>
-                <Skeleton minWidth={'80px'} isLoaded={!store.darkTotalDividendsDistributed.loading}>
-                  <Text align={'center'} fontSize='x-large' fontWeight='bold'>{store.darkTotalDividendsDistributed.format}</Text>
-                </Skeleton>
-                <Image src='images/dKNIGHT.svg' boxSize="32px" />
-              </HStack>
+              <CurrencyLoader number={store.darkTotalDividendsDistributed} imageRef='images/dKNIGHT.svg' coinPrice={currencies.darkKnightCoinPrices} />
             </WrapItem>
           </Wrap>
         </Box>
