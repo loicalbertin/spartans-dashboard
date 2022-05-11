@@ -5,7 +5,7 @@ import { ChainState } from './lib/ChainState';
 import { EthNetworkState } from './lib/EthNetworkState';
 import { NetworkState } from './lib/NetworkState';
 import RootStore from './root';
-import { NumberState } from './standard/base';
+import { NumberState, StringState } from './standard/base';
 import { MappingState } from './standard/MappingState';
 
 export enum Network {
@@ -23,6 +23,7 @@ export class GodStore {
       bsc: EthNetworkConfig
     }
   });
+  currency=new StringState({value: 'usd'});
 
   updateTicker = new NumberState();
 
