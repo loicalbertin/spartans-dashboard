@@ -26,9 +26,9 @@ export const NFTsBoard = observer(() => {
       store.nfts.setValue(new Array<NFTState>());
       store.loadingConfigs.setValue(SpartanNFTsConfig.length);
       store.loadingTokens.setValue(0);
-      console.log('loadNFTs for wallet: %s', walletAddress);
+      // console.log('loadNFTs for wallet: %s', walletAddress);
       for (const nftConfig of SpartanNFTsConfig) {
-        console.log('loadNFTs for config: %s', nftConfig.name);
+        // console.log('loadNFTs for config: %s', nftConfig.name);
         let nftsBalanceFn = new ReadFunction<[string], any>({ name: 'balanceOf', contract: nftConfig, value: new BigNumberState({}) });
         let nftsTokenByIndexFn = new ReadFunction<[string, number], any>({ name: 'tokenOfOwnerByIndex', contract: nftConfig, value: new BigNumberState({}) });
         let netState = god.bscNetwork;
@@ -40,17 +40,17 @@ export const NFTsBoard = observer(() => {
             nftsBalanceFn.preMulticall({
               params: [walletAddress], handler: action('readTokens', (v: any) => {
                 let balance = new BigNumber(v.toString());
-                console.log('loadNFTs balanceOf result: %d', balance);
+                // console.log('loadNFTs balanceOf result: %d', balance);
                 store.loadingTokens.setValue(store.loadingTokens.value + balance.toNumber());
                 store.loadingConfigs.setValue(store.loadingConfigs.value - 1);
                 for (let index = 0; new BigNumber(index).isLessThan(balance); index++) {
-                  console.log('loadNFTs loading index: %d', index);
+                  // console.log('loadNFTs loading index: %d', index);
                   netState.multicall(
                     [
                       nftsTokenByIndexFn.preMulticall({
                         params: [walletAddress, index], handler: action('addNFT', (v: any) => {
                           let tokenId = new BigNumber(v.toString());
-                          console.log('loadNFTs tokenOfOwnerByIndex index: %d result: %d', index, tokenId);
+                          // console.log('loadNFTs tokenOfOwnerByIndex index: %d result: %d', index, tokenId);
                           store.nfts.value.push(new NFTState({ tokenId: tokenId, config: nftConfig }));
                           store.loadingTokens.setValue(store.loadingTokens.value - 1);
                         })
@@ -67,7 +67,7 @@ export const NFTsBoard = observer(() => {
   }));
 
   useEffect(() => {
-    console.log('init NFTs');
+    // console.log('init NFTs');
 
     reaction(
       () => god.trackedWalletAddress.value,

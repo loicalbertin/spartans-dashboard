@@ -35,7 +35,7 @@ export const WalletSelecter = observer(() => {
     },
     async setChain(val) {
       const chain = god.currentNetwork.chain.map[val];
-      console.log(chain);
+      // console.log(chain);
       try {
         await metamaskUtils.setupNetwork({
           chainId: chain.chainId,
