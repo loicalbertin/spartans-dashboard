@@ -39,7 +39,7 @@
     "copy-to-clipboard": "^3.3.1",
     "ethcall": "4.4.0",
     "ethereumjs-util": "7.1.4",
-    "ethers": "^5.6.9",
+    "ethers": "5.6.1",
     "framer-motion": "6.2.8",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
