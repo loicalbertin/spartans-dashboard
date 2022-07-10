@@ -1,16 +1,16 @@
-import React, { useEffect, useMemo } from 'react';
-import { Web3ReactProvider } from '@web3-react/core';
 import { ChakraProvider } from '@chakra-ui/react';
-import { Toaster } from 'react-hot-toast';
+import { Web3ReactProvider } from '@web3-react/core';
 import type { AppProps } from 'next/app';
+import { useEffect, useMemo } from 'react';
+import { Toaster } from 'react-hot-toast';
 
-import { useStore } from '@/store/index';
+import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header/index';
 import { theme } from '@/lib/theme';
+import { useStore } from '@/store/index';
 import { ETHProvider } from '../components/EthProvider';
-import { getLibrary } from '../lib/web3-react';
 import { WalletSelecter } from '../components/WalletSelecter/index';
-import { Footer } from '@/components/Footer';
+import { getLibrary } from '../lib/web3-react';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const { lang, god, currencies } = useStore();
@@ -31,7 +31,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           <Toaster />
           <Header />
           <Component {...pageProps} />
-          <Footer/>
+          <Footer />
         </Web3ReactProvider>
       </ChakraProvider>
     )
