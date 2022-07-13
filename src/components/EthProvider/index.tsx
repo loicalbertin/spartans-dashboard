@@ -29,7 +29,7 @@ export const ETHProvider = observer(({ children }) => {
   }));
 
   useEffect(() => {
-    console.log({ chainId });
+    // console.log({ chainId });
     if (chainId) {
       if (god.currentNetwork.allowChains.includes(chainId)) {
         god.setChain(chainId);

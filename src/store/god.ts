@@ -23,7 +23,8 @@ export class GodStore {
       bsc: EthNetworkConfig
     }
   });
-  currency=new StringState({value: 'usd'});
+
+  trackedWalletAddress = new StringState();
 
   updateTicker = new NumberState();
 

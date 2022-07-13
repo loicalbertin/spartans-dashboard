@@ -1,16 +1,15 @@
 
 import spartanAbi from '@/constants/abi/spartan.json';
 import TokenState from '@/store/lib/TokenState';
-import { BooleanState, StringState } from '@/store/standard/base';
+import { BooleanState } from '@/store/standard/base';
 import { BigNumberState } from '@/store/standard/BigNumberState';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
-import { Box, Container, Divider, Grid, GridItem, Icon, Input, Link, SimpleGrid, Text, VStack, Wrap, WrapItem } from '@chakra-ui/react';
+import { Box, Container, Divider, Flex, Grid, GridItem, Icon, Link, SimpleGrid, Text, VStack, Wrap, WrapItem } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
 import { action, reaction } from 'mobx';
 import { observer, useLocalObservable } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { BiWallet } from "react-icons/bi";
-import { BsYoutube } from "react-icons/bs";
 import { useStore } from '../../store/index';
 import { CurrencyLoader } from '../CurrencyLoader';
 
@@ -18,7 +17,6 @@ import { CurrencyLoader } from '../CurrencyLoader';
 export const RewardsBoard = observer(() => {
   const { god, currencies } = useStore();
   const store = useLocalObservable(() => ({
-    walletAddress: new StringState(),
     spartanToken: new TokenState({ address: "0xbcfe392E778dbB59DcAd624F10f7fa8C4a910B1e", abi: spartanAbi, fixed: 6, numeralFormat: '0[.]00' }),
     knightToken: new TokenState({ address: "0xd23811058eb6e7967d9a00dc3886e75610c4abba", abi: spartanAbi, fixed: 6, numeralFormat: '0[.]00' }),
     totalDividendsDistributed: new BigNumberState({ fixed: 6, loading: true, numeralFormat: '0[.]00' }),
@@ -54,8 +52,8 @@ export const RewardsBoard = observer(() => {
       );
     },
     async updateDataForWallet() {
-      const val = store.walletAddress.value;
-      if (god.bscNetwork.isAddress(val)) {
+      const val = god.trackedWalletAddress.value;
+      if (god.currentNetwork.isAddress(val)) {
         await god.bscNetwork.multicall(
           [
             store.spartanToken.preMulticall({
@@ -89,13 +87,14 @@ export const RewardsBoard = observer(() => {
       () => god.currentNetwork.account,
       account => {
         if (god.currentNetwork.account) {
-          store.walletAddress.setValue(account);
+          god.trackedWalletAddress.setValue(account);
         }
       });
 
     reaction(
-      () => store.walletAddress.value,
+      () => god.trackedWalletAddress.value,
       async (val) => {
+        store.resetWalletLoaders();
         store.updateCommonData();
         store.updateDataForWallet();
       });
@@ -123,32 +122,16 @@ export const RewardsBoard = observer(() => {
 
 
   return (
-    <Container maxW="10xl" p={10}>
+    <Container maxW="10xl" pb={12}>
       <VStack direction={['column', 'row']} spacing='24px'>
-        <Text fontSize="md" fontWeight="bold" justifyContent={'center'} align={'center'} color={'teal.500'}>
-          <Link
-            href='https://youtu.be/KeRLRkDSkjQ'
-            color='teal.500'
-            isExternal>Check out Joey's tutorial about this dashboard {' '}<Icon as={BsYoutube} boxSize={5} />
-          </Link>
-        </Text>
-        <Input size='lg'
-          placeholder='Wallet address'
-          isInvalid={god.currentNetwork.isAddress(store.walletAddress.value) === false}
-          value={store.walletAddress.value}
-          onChange={(e) => {
-            store.resetWalletLoaders();
-            store.walletAddress.setValue(e.target.value);
-          }} />
-
-        <Divider />
         <SimpleGrid w='100%' minChildWidth='180px' spacing={12}>
-
 
           <VStack spacing='4px'>
             <Text fontSize='xx-large' >In your wallet</Text>
             <Box w='100%' p={4} borderWidth='1px' borderRadius='lg'>
-              <Icon as={BiWallet} boxSize={8} />
+              <Flex align={'left'}>
+                <Icon as={BiWallet} boxSize={8} />
+              </Flex>
               <CurrencyLoader number={store.spartanToken._balance} imageRef='images/spartans.png' coinPrice={currencies.spartanCoinPrices} />
               <CurrencyLoader number={store.knightToken._balance} imageRef='images/knight-icon.png' coinPrice={currencies.knightCoinPrices} />
               <CurrencyLoader number={store.darkSpartanToken._balance} imageRef='images/dark-spartans.png' coinPrice={currencies.darkSpartanCoinPrices} />

@@ -46,7 +46,7 @@ export class DexAPI {
   public async getAssets(): Promise<Map<string, Asset>> {
     return this.instance
       .get('/assets').then(response => {
-        console.log('>>>data: ', response.data);
+        // console.log('>>>data: ', response.data);
         const assets = new Map<string, Asset>();
         Object.entries(response.data).forEach(([assetKey,assetValue]) => assets.set(assetKey.toLowerCase(), assetValue as Asset))
         return assets;

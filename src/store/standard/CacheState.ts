@@ -21,7 +21,7 @@ export class CacheState<T = Record<string, string>> {
     this.data[key] = val;
   }
   save() {
-    console.log(this.data);
+    // console.log(this.data);
     this.cacher.setItem(this.id, toJS(this.data));
   }
   async get(): Promise<T> {

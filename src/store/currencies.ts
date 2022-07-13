@@ -59,13 +59,13 @@ export class CurrenciesStore {
   ]);
 
   async init() {
-    console.log('CurrenciesStore init');
+    // console.log('CurrenciesStore init');
     setInterval(() => {
       this.updateCoinsPrices();
       this.updateCurrency();
     }, 10 * 60 * 1000);
 
-    console.log('first update of prices');
+    // console.log('first update of prices');
     this.updateCoinsPrices();
     this.updateCurrency();
   }
@@ -74,7 +74,7 @@ export class CurrenciesStore {
     if (this.currency.value === 'usd') {
       this.currencyUSDValue = new BigNumber(1);
       this.loading.setValue(false);
-      console.log('set loading to false');
+      // console.log('set loading to false');
       return;
     }
 
@@ -85,7 +85,7 @@ export class CurrenciesStore {
       .then((res) => {
         this.currencyUSDValue = new BigNumber(res.price_usd);
         this.loading.setValue(false);
-        console.log('set loading to false');
+        // console.log('set loading to false');
       })
       .catch((reason) => {
         console.log('error retrieving currency', reason);

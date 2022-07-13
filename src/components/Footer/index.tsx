@@ -12,10 +12,9 @@ export const Footer = observer(() => {
   }));
 
   return (
-    <Box>
+    <Box as={'footer'} position={'fixed'} bottom={'0'} left={'0'} right={'0'}>
       <Divider />
       <Flex
-        as={'footer'}
         minH={'50px'}
         boxShadow={'sm'}
         zIndex="999"
@@ -28,7 +27,7 @@ export const Footer = observer(() => {
 
         <Container as={Flex} maxW={'7xl'} align={'center'} justifyContent={'center'} >
           <Text size="xs" align={'center'} paddingX={4}>
-            Made with ❤️ in French Alps ❄️
+            Made with ❤️ in French Alps 🏔️
           </Text>
           <Text size="xs" align={'center'} paddingX={4}>
             <Link onClick={() => store.modelOpen.setValue(true)}>

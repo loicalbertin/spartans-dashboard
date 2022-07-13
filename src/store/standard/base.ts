@@ -33,6 +33,17 @@ export class NumberState {
   }
 }
 
+export class ArrayState<T> {
+  value: Array<T> = new Array<T>();
+  constructor(args: Partial<ArrayState<T>> = {}) {
+    Object.assign(this, args);
+    makeAutoObservable(this);
+  }
+  setValue(value: Array<T>) {
+    this.value = value;
+  }
+}
+
 export class ValueState<T> {
   _value: T = null;
   constructor(args: Partial<ValueState<T>> = {}) {
